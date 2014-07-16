@@ -1,0 +1,11 @@
+--- base.js.orig	2014-07-16 18:15:24.000000000 +1000
++++ base.js	2014-07-16 18:15:38.000000000 +1000
+@@ -193,7 +193,7 @@
+     // variable declaration, the compiled JS should work the same as the raw
+     // JS--even when the raw JS uses goog.provide incorrectly.
+     if (goog.isProvided_(name)) {
+-      throw Error('Namespace "' + name + '" already declared.');
++      return
+     }
+     delete goog.implicitNamespaces_[name];
+ 
