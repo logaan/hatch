@@ -6,7 +6,7 @@
 
 (defn present! [href]
   (xhr/req
-   {:method :get
+   {:method "GET"
     :url href
     :on-complete state/on-entity!}))
 
@@ -24,8 +24,11 @@
 
 (defn link-to-action-exec [{:keys [title] :as action}]
   (letfn [(on-click [ev]
-            (.preventDefault ev)
-            (js/alert title))]
+           (.preventDefault ev)
+           (xhr/req ; FIXME
+            {:method (:method @action)
+             :url (:href @action)
+             :on-complete #(present! "/hosts")}))]
     (dom/a #js{:href "#" :onClick on-click} title)))
 
 (defn link-to-action [{:keys [fields] :as action}]

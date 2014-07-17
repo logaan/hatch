@@ -8,17 +8,18 @@
            goog.net.EventType
            [goog.events EventType]))
 
-(def ^:private meths
-  {:get "GET"
-   :put "PUT"
-   :post "POST"
-   :delete "DELETE"})
-
-(defn req [{:keys [method url data on-complete]}]
+(defn req [{:keys [method url data on-complete on-response]}]
   (let [xhr (XhrIo.)]
-    (events/listen xhr goog.net.EventType.COMPLETE
-      (fn [e]
-        (on-complete (reader/read-string (.getResponseText xhr)))))
+
+    (when on-complete
+      (events/listen xhr goog.net.EventType.COMPLETE
+        (fn [e]
+          (on-complete (reader/read-string (.getResponseText xhr))))))
+
+    (when on-response
+      (events/listen xhr goog.net.EventType.COMPLETE
+        (fn [e] (on-response xhr e))))
+
     (. xhr
-      (send url (meths method) (when data (pr-str data))
+      (send url method (when data (pr-str data))
         #js {"Content-Type" "application/edn"}))))
