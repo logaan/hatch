@@ -1,76 +1,63 @@
 (ns wc.ui.core
   (:require [om.core :as om  :include-macros true]
             [om.dom  :as dom :include-macros true]
-            [ankha.core :as ankha]
+            [wc.ui.state :as state]
+            [wc.ui.entity :as entity]
             [wc.ui.xhr :as xhr]))
 
 (enable-console-print!)
 
-(def app-state (atom {}))
-
-(defn on-entity! [ent]
-  (swap! app-state assoc :entity ent)
-  #_(debug/inspect! @app-state))
-
-(defn present-entity! [href]
-  (xhr/req
-   {:method :get
-    :url href
-    :on-complete on-entity!}))
-
-(defn entity-link [{:keys [href rel]}]
-  (letfn [(on-click [ev]
-            (.preventDefault ev)
-            (present-entity! href))]
-    (dom/a #js{:href href :onClick on-click} (first rel))))
-
-(defn wrap-list [title ls]
-  (when (not (empty? ls))
-    (dom/div nil
-            (dom/h5 nil title)
-            (apply dom/ul nil
-                   (map #(dom/li nil %) ls)))))
-
-(defn entities-list [ent]
-  (wrap-list "Entities"
-             (om/build-all entity (:entities ent))))
-
-(defn links-list [ent]
-  (wrap-list "Links"
-             (map entity-link (:links ent))))
-
-(defn actions-list [ent]
-  (wrap-list "Actions"
-             (for [action (:actions ent)]
-               (:title action))))
-
-(defn display-name [ent]
-  (->> ent
-       :properties
-       (filter (fn [[k v]] (= "name" (name k))))
-       first second))
-
-(defn entity [ent owner]
+(defn editable [form owner]
   (reify
     om/IRender
     (render [this]
-      (dom/div
-       nil
-       (dom/h4 nil (display-name ent))
-       (links-list ent)
-       (entities-list ent)
-       (actions-list ent)
-       ))))
+      (dom/div nil
+        (dom/input
+         #js{:type "text"}))
+    )))
+
+(defn field->editable [form {field-name :name field-type :type}]
+  (om/build editable (field-name form)))
+
+(defn on-submit [ev]
+  (.preventDefault ev)
+  (js/alert "foo bar"))
+
+(defn action-form [{act :action form :form}]
+  (apply dom/form nil
+    (concat
+      (for [field (:fields act)]
+        (field->editable form field))
+      [(dom/input #js{:type "submit"
+                      :value "Submit"
+                      :onClick on-submit})]
+      )))
+
+(defn action [data owner]
+  (reify
+    om/IRender
+    (render [this]
+      (dom/div nil
+        (dom/h1 nil (get-in data [:action :title]))
+        (dom/a #js{:href "#" :onClick state/cancel-action!} "back")
+        (action-form data)
+        ))))
 
 (defn app [data owner]
   (reify
     om/IRender
     (render [this]
-      (om/build entity (:entity data)))))
+      (cond
+        (:action data) (om/build action {:action (:action data)
+                                         :form   (:form   data)})
+        (:entity data) (om/build entity/component (:entity data))
+        :else          (dom/div nil)))))
 
 (defn render! []
-  (om/root app app-state
+  (debug/attach-inspector state/state :form)
+  (om/root app state/state
    {:target (. js/document (getElementById "app"))}))
 
-(present-entity! "/hosts")
+(entity/present! "/hosts")
 (render!)
+

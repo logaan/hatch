@@ -11,3 +11,10 @@
 (defn inspect! [v]
   (reset! inspected v)
   (render!))
+
+(defn attach-inspector
+  ([target]
+   (attach-inspector target identity))
+  ([target wrap]
+    (om/root (fn [data _] (om/build ankha/inspector (wrap data))) target
+     {:target (js/document.getElementById "inspector")})))
