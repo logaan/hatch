@@ -15,9 +15,8 @@
     :on-complete on-entity!}))
 
 (defn on-response! [xhr e]
-  (fn [xhr e]
-    (present!
-     (.getResponseHeader xhr "Location"))))
+  (present!
+   (.getResponseHeader xhr "Location")))
 
 (defn show-action-form! [action]
   (swap! state   assoc

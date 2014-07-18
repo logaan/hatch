@@ -25,9 +25,9 @@
    (fn [ev]
      (.preventDefault ev)
      (xhr/req
-      {:method (:method @action)
-       :url (:href @action)
-       :data @form
+      {:method      (:method @action)
+       :url         (:href @action)
+       :data        @form
        :on-response state/on-response!})))
 
 (defn action-form [{:keys [action form]}]
