@@ -18,7 +18,6 @@
         :else          (dom/div nil)))))
 
 (defn render! []
-  (js/console.log "render!")
   (om/root app state/state
    {:target (. js/document (getElementById "app"))}))
 

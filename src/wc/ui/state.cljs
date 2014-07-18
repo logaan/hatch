@@ -5,13 +5,13 @@
 
 (defn on-entity! [ent]
   (swap! state
-    #(-> % (assoc :entity ent)
+    #(-> % (assoc  :entity ent)
            (dissoc :action :form))))
 
 (defn present! [href]
   (xhr/req
-   {:method "GET"
-    :url href
+   {:method      "GET"
+    :url         href
     :on-complete on-entity!}))
 
 (defn on-response! [xhr e]
@@ -19,10 +19,21 @@
     (present!
      (.getResponseHeader xhr "Location"))))
 
+(defn show-action-form! [action]
+  (swap! state   assoc
+         :action action
+         :form   {}))
+
+(defn exec-action! [action]
+  (xhr/req
+   {:method       (:method  action)
+    :url          (:href    action)
+    :on-complete #(present! "/hosts")}))
+
 (defn perform-action! [action]
-  (swap! state assoc
-         :action @action
-         :form {}))
+  (if (:fields action)
+    (show-action-form! action)
+    (exec-action!      action)))
 
 (defn cancel-action! []
   (swap! state dissoc :action :form))

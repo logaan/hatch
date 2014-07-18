@@ -9,25 +9,11 @@
             (state/present! href))]
     (dom/a #js{:href href :onClick on-click} (first rel))))
 
-(defn link-to-action-form [{:keys [title] :as action}]
+(defn link-to-action [{:keys [title] :as action}]
   (letfn [(on-click [ev]
             (.preventDefault ev)
-            (state/perform-action! action))]
+            (state/perform-action! @action))]
     (dom/a #js{:href "#" :onClick on-click} title)))
-
-(defn link-to-action-exec [{:keys [title] :as action}]
-  (letfn [(on-click [ev]
-           (.preventDefault ev)
-           (xhr/req ; FIXME
-            {:method (:method @action)
-             :url (:href @action)
-             :on-complete #(state/present! "/hosts")}))]
-    (dom/a #js{:href "#" :onClick on-click} title)))
-
-(defn link-to-action [{:keys [fields] :as action}]
-  (if fields
-    (link-to-action-form action)
-    (link-to-action-exec action)))
 
 (defn wrap-list [title ls]
   (when (not (empty? ls))
@@ -36,7 +22,7 @@
             (apply dom/ul nil
                    (map #(dom/li nil %) ls)))))
 
-(def component)
+(declare component)
 
 (defn entities-list [ent]
   (wrap-list "Entities" (om/build-all component (:entities ent))))
