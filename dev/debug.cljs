@@ -2,7 +2,7 @@
   (:require [om.core :as om :include-macros true]
             [ankha.core :as ankha]))
 
-(def inspected (atom))
+(def inspected (atom nil))
 
 (defn render! []
   (om/root ankha/inspector inspected

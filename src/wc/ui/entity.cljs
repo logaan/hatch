@@ -1,19 +1,12 @@
 (ns wc.ui.entity
   (:require [om.core :as om  :include-macros true]
             [om.dom  :as dom :include-macros true]
-            [wc.ui.state :as state]
-            [wc.ui.xhr :as xhr]))
-
-(defn present! [href]
-  (xhr/req
-   {:method "GET"
-    :url href
-    :on-complete state/on-entity!}))
+            [wc.ui.state :as state]))
 
 (defn link-to-entity [{:keys [href rel]}]
   (letfn [(on-click [ev]
             (.preventDefault ev)
-            (present! href))]
+            (state/present! href))]
     (dom/a #js{:href href :onClick on-click} (first rel))))
 
 (defn link-to-action-form [{:keys [title] :as action}]
@@ -28,7 +21,7 @@
            (xhr/req ; FIXME
             {:method (:method @action)
              :url (:href @action)
-             :on-complete #(present! "/hosts")}))]
+             :on-complete #(state/present! "/hosts")}))]
     (dom/a #js{:href "#" :onClick on-click} title)))
 
 (defn link-to-action [{:keys [fields] :as action}]
@@ -42,6 +35,8 @@
             (dom/h5 nil title)
             (apply dom/ul nil
                    (map #(dom/li nil %) ls)))))
+
+(def component)
 
 (defn entities-list [ent]
   (wrap-list "Entities" (om/build-all component (:entities ent))))
