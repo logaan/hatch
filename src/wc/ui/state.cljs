@@ -34,7 +34,7 @@
        :href))
 
 (defn exec-action!
-  ([action]
+  ([action] ;; TODO should we always go to the listing after form-free actions?
    (xhr/req
     {:method       (:method  action)
      :url          (:href    action)
