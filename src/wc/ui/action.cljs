@@ -24,11 +24,7 @@
   [action form]
    (fn [ev]
      (.preventDefault ev)
-     (xhr/req
-      {:method      (:method @action)
-       :url         (:href @action)
-       :data        @form
-       :on-response state/on-response!})))
+     (state/perform-action! @action @form)))
 
 (defn action-form [{:keys [action form]}]
   (apply dom/form nil
