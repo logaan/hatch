@@ -9,11 +9,15 @@
     #(-> % (assoc  :entity ent)
            (dissoc :action :form))))
 
+(def http-ok         200)
+(def http-created    201)
+(def http-no-content 204)
+
 (defn on-response! [xhr e]
   (condp = (.getStatus xhr)
-   200 (on-entity! (reader/read-string (.getResponseText xhr)))
-   201 (present!   (.getResponseHeader xhr "Location"))
-   204 (present!   (get-link "self" (:entity @state)))))
+   http-ok         (on-entity! (reader/read-string (.getResponseText xhr)))
+   http-created    (present!   (.getResponseHeader xhr "Location"))
+   http-no-content (present!   (get-link "self" (:entity @state)))))
 
 (defn present! [href]
   (xhr/req
