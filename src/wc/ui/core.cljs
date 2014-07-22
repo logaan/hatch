@@ -3,8 +3,7 @@
             [om.dom  :as dom :include-macros true]
             [wc.ui.state   :as state]
             [wc.ui.entity  :as entity]
-            [wc.ui.action  :as action]
-            [wc.ui.xhr     :as xhr]))
+            [wc.ui.action  :as action]))
 
 (enable-console-print!)
 
