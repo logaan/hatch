@@ -35,10 +35,11 @@
 
 (defn display-name [ent]
   (or
-   (->> ent :properties :title)
-   (->> ent :properties
-        (filter (fn [[k v]] (= "name" (name k))))
-        first second)))
+   (-> ent :properties :title)
+   (let [[[_ v]]
+         (filter (fn [[k v]] (= "name" (name k)))
+                 (ent :properties))]
+     v)))
 
 (defn component [ent owner]
   (reify
