@@ -34,10 +34,11 @@
   (wrap-list "Actions" (map link-to-action (:actions ent))))
 
 (defn display-name [ent]
-  (->> ent
-       :properties
-       (filter (fn [[k v]] (= "name" (name k))))
-       first second))
+  (or
+   (->> ent :properties :title)
+   (->> ent :properties
+        (filter (fn [[k v]] (= "name" (name k))))
+        first second)))
 
 (defn component [ent owner]
   (reify
