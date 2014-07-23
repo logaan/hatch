@@ -13,7 +13,7 @@
         (dom/label nil (str (name field-key) ": "))
         (dom/input
          #js{:type "text"
-             :onBlur
+             :onChange
              (fn [e]
                (om/transact! form field-key (fn [_] (.. e -target -value))))}))
     )))
