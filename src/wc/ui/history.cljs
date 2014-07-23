@@ -1,5 +1,6 @@
 (ns wc.ui.history
-  (:require [goog.events :as events])
+  (:require [goog.events :as events]
+            [uri.core    :as uri])
   (:import goog.History
            goog.history.EventType))
 
@@ -9,3 +10,9 @@
   (events/listen history goog.history.EventType.NAVIGATE
                  (fn [e] (f (.-token e))))
   (.setEnabled history true))
+
+(defn goto! [loc]
+  (.setToken history (uri/relative loc)))
+
+(defn replace! [loc]
+  (.replaceToken history (uri/relative loc)))

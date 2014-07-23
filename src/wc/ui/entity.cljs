@@ -1,8 +1,7 @@
 (ns wc.ui.entity
-  (:require [om.core :as om  :include-macros true]
-            [om.dom  :as dom :include-macros true]
-            [uri.core    :as uri]
-            [wc.ui.state :as state]))
+  (:require [om.core  :as om  :include-macros true]
+            [om.dom   :as dom :include-macros true]
+            [uri.core :as uri]))
 
 (defn get-link [rel ent] ;; FIXME
   (->> ent
@@ -60,7 +59,7 @@
       (dom/div
        nil
        (dom/h4 nil (display-name ent))
-       (links-list ent)
+       (links-list    ent)
        (entities-list ent)
-       (actions-list ent)
+       (actions-list  ent)
        ))))
