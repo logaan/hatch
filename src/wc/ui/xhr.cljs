@@ -1,14 +1,8 @@
 (ns wc.ui.xhr
-  (:require [goog.events :as events])
+  (:require [uri.core    :as uri]
+            [goog.events :as events])
   (:import goog.net.XhrIo
-           goog.net.EventType
-           goog.Uri))
-
-(defn format-query [url data]
-  (let [uri (.parse goog.Uri url)]
-    (doseq [[k v] data]
-      (.setParameterValue uri (name k) (str v)))
-    (.toString uri)))
+           goog.net.EventType))
 
 (defn ^:private match [[method-pat type-pat] [method type]]
   (and (or (= method-pat :any) (= method-pat method))
@@ -18,7 +12,7 @@
 
 (defn format-data [method url type data]
   (condp match [method type]
-    ["GET" :any] [(format-query url data) nil nil]
+    ["GET" :any] [(uri/add-query url data) nil nil]
     [:any   edn] [url #js{"Content-Type" type} (pr-str data)]
     [:any   nil] [url nil nil]))
 

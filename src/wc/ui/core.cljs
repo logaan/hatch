@@ -10,5 +10,4 @@
    {:target (. js/document (getElementById "app"))}))
 
 (app/init!)
-(state/present! "/")
 (render!)

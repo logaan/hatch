@@ -1,13 +1,14 @@
 (ns wc.ui.entity
   (:require [om.core :as om  :include-macros true]
             [om.dom  :as dom :include-macros true]
+            [uri.core    :as uri]
             [wc.ui.state :as state]))
 
+(defn href->fragment [href]
+  (str "#" (uri/relative href)))
+
 (defn link-to-entity [{:keys [href rel]}]
-  (letfn [(on-click [ev]
-            (.preventDefault ev)
-            (state/present! href))]
-    (dom/a #js{:href href :onClick on-click} (first rel))))
+  (dom/a #js{:href (href->fragment href)} (first rel)))
 
 (defn link-to-action [{:keys [title] :as action}]
   (letfn [(on-click [ev]

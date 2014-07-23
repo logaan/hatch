@@ -6,5 +6,6 @@
 (def history (new goog.History))
 
 (defn init [f]
-  (events/listen history goog.history.EventType.NAVIGATE f)
+  (events/listen history goog.history.EventType.NAVIGATE
+                 (fn [e] (f (.-token e))))
   (.setEnabled history true))

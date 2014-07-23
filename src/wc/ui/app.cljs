@@ -16,4 +16,7 @@
         :else          (dom/div nil)))))
 
 (defn init! []
-  (history/init identity))
+  (history/init
+   (fn [token]
+     (state/present!
+      (if (= token "") "/" token)))))
