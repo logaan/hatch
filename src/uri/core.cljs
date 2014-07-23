@@ -24,3 +24,8 @@
   (let [uri (.parse goog.Uri url)]
    (when (.hasFragment uri)
      (.getFragment uri))))
+
+(defn defragment [url]
+  (let [uri (.parse goog.Uri url)]
+   (.setFragment uri "")
+   (.toString uri)))

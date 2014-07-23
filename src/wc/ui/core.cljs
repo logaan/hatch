@@ -6,9 +6,9 @@
 (enable-console-print!)
 
 (defn render! []
-  ;(debug/attach-inspector state/state)
+  (debug/attach-inspector state/state #(dissoc % :entity))
   (om/root app/component state/state
-   {:target (. js/document (getElementById "app"))}))
+   {:target (js/document.getElementById "app")}))
 
 (app/init!)
 (render!)

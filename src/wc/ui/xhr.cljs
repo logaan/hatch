@@ -25,16 +25,17 @@
       (events/listen xhr goog.net.EventType.COMPLETE
         (fn [e] (on-complete xhr e))))
 
-    (.send xhr url method data headers)))
+    (.send xhr url method data headers)
 
-(defn ->edn [xhr]
-  (reader/read-string (.getResponseText xhr)))
+    xhr))
 
-(defn header [xhr header]
-  (.getResponseHeader xhr "Location"))
+;; TODO make this a protocol or something
 
-(def status [xhr]
-  (.getStatus xhr))
+(defn ->edn    [xhr] (reader/read-string (.getResponseText xhr)))
+(defn header   [xhr header] (.getResponseHeader xhr header))
+(defn status   [xhr] (.getStatus xhr))
+(defn abort    [xhr] (.abort xhr))
+(defn last-uri [xhr] (.getLastUri xhr))
 
 (def ok         200)
 (def created    201)

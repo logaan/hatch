@@ -16,3 +16,6 @@
 
 (defn replace! [loc]
   (.replaceToken history (uri/relative loc)))
+
+(defn location []
+  (.getToken history))

@@ -13,8 +13,8 @@
   (swap! state
          #(-> %
               (assoc  :entity ent)
-              (dissoc :action ent)
-              perform-pending-action)))
+              (dissoc :action :form)
+              perform-pending-action!)))
 
 (defn perform-action-named! [name]
   (swap! state assoc :pending-action name))
@@ -25,16 +25,14 @@
 (defn current-entity []
   (:entity @state))
 
-
 (defn show-action-form [state action]
   (assoc state
          :action action
          :form   {}))
 
-
 (declare exec-action!)
 
-(defn perform-pending-action [state]
+(defn perform-pending-action! [state]
   (let [{ent  :entity
          pend :pending-action} state
         state (dissoc state :pending-action)]
@@ -45,28 +43,45 @@
              state))
       state)))
 
-
 (defn load! [xhr]
-  (history/replace! (uri/relative (.getLastUri xhr))) ;; FIXME
-  (on-entity!       (xhr/->edn xhr)))
+  (let [ent (xhr/->edn xhr)
+        url (uri/relative (siren/get-link ent "self"))]
+   (swap! state assoc :current-url url)
+   (history/replace! url)
+   (on-entity! ent)))
+
+(defn reload! [href]
+  (swap! state assoc :reload true)
+  (history/goto! href))
 
 (defn on-complete! [xhr e]
+  (swap! state dissoc :abort-request :reload)
   (condp = (xhr/status xhr)
-    xhr/ok         (load! xhr)
-    xhr/created    (history/goto! (xhr/header xhr "Location"))
-    xhr/no-content (history/goto! (siren/get-link (current-entity) "self"))))
+    xhr/ok         (load!    xhr)
+    xhr/created    (reload! (xhr/header xhr "Location"))
+    xhr/no-content (reload! (siren/get-link (current-entity) "self"))))
 
-(defn goto-listing! [xhr e]
-  (history/goto! (siren/get-link (current-entity) "listing")))
-
-(defn present! [href]
+(defn get! [href]
   (xhr/req
    {:method      "GET"
     :url         href
     :on-complete on-complete!}))
 
+(defn present! [href]
+  (if (or (not= (:current-url @state)
+                (uri/defragment href))
+          (:reload @state))
+    (let [req (get! href)]
+      (swap! state assoc
+             :current-url href
+             :abort-request #(xhr/abort req)))
+    (on-entity! (:entity @state))))
+
+(defn goto-listing! [xhr e]
+  (history/goto! (siren/get-link (current-entity) "listing")))
+
 (defn exec-action!
-  ([action] ;; TODO should we always go to the listing after form-free actions?
+  ([action]
    (xhr/req
     {:method       (:method  action)
      :url          (:href    action)

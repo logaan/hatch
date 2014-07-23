@@ -19,7 +19,7 @@
 (defn init! []
   (history/init
    (fn [token]
-     (state/present!
-      (if (= token "") "/" token))
      (when-let [action-name (uri/fragment token)]
-       (state/perform-action-named! action-name)))))
+       (state/perform-action-named! action-name)) ;; FIXME
+     (state/present!
+      (if (= token "") "/" token)))))
