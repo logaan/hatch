@@ -42,6 +42,5 @@
     (render [this]
       (dom/div nil
         (dom/h1 nil (get-in data [:action :title]))
-        (dom/a #js{:href "#" :onClick state/cancel-action!} "back")
         (action-form data)
         ))))
