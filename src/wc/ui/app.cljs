@@ -1,6 +1,7 @@
 (ns wc.ui.app
   (:require [om.core :as om  :include-macros true]
             [om.dom  :as dom :include-macros true]
+            [uri.core      :as uri]
             [wc.ui.state   :as state]
             [wc.ui.entity  :as entity]
             [wc.ui.action  :as action]
@@ -19,4 +20,6 @@
   (history/init
    (fn [token]
      (state/present!
-      (if (= token "") "/" token)))))
+      (if (= token "") "/" token))
+     (when-let [action-name (uri/fragment token)]
+       (state/perform-action-named! action-name)))))

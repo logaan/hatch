@@ -9,12 +9,18 @@
     #(-> % (assoc  :entity ent)
            (dissoc :action :form))))
 
-(defn get-link [rel ent]
+(defn get-link [ent rel]
   (->> ent
        :links
        (filter #(some #{rel} (:rel %)))
        first
        :href))
+
+(defn get-action [ent action-name]
+  (->> ent
+       :actions
+       (filter #(= action-name (:name %)))
+       first))
 
 (defn ->edn [xhr]
   (reader/read-string (.getResponseText xhr)))
@@ -29,7 +35,7 @@
   (condp = (.getStatus xhr)
    http-ok         (on-entity! (->edn xhr))
    http-created    (present!   (.getResponseHeader xhr "Location"))
-   http-no-content (present!   (get-link "self" (:entity @state)))))
+   http-no-content (present!   (get-link (:entity @state) "self"))))
 
 (defn present! [href]
   (xhr/req
@@ -48,7 +54,7 @@
     {:method       (:method  action)
      :url          (:href    action)
      :type         (:type    action)
-     :on-complete #(present! (get-link "listing" (:entity @state)))}))
+     :on-complete #(present! (get-link (:entity @state) "listing"))}))
   ([action form]
    (xhr/req
     {:method       (:method  action)
@@ -56,6 +62,9 @@
      :type         (:type    action)
      :data         form
      :on-complete  on-complete!})))
+
+(defn perform-action-named! [name]
+  )
 
 (defn perform-action!
   ([action]

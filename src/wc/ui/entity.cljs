@@ -4,17 +4,28 @@
             [uri.core    :as uri]
             [wc.ui.state :as state]))
 
-(defn href->fragment [href]
-  (str "#" (uri/relative href)))
+(defn get-link [rel ent] ;; FIXME
+  (->> ent
+       :links
+       (filter #(some #{rel} (:rel %)))
+       first
+       :href))
 
-(defn link-to-entity [{:keys [href rel]}]
-  (dom/a #js{:href (href->fragment href)} (first rel)))
+(defn ent->href [ent]
+  (or (:href ent)
+      (get-link "self" ent)))
 
-(defn link-to-action [{:keys [title] :as action}]
-  (letfn [(on-click [ev]
-            (.preventDefault ev)
-            (state/perform-action! @action))]
-    (dom/a #js{:href "#" :onClick on-click} title)))
+(defn ent->fragment [ent]
+  (str "#" (uri/relative (ent->href ent))))
+
+(defn action->fragment [ent action]
+  (str (ent->fragment ent) "#" (:name action)))
+
+(defn link-to-entity [{:keys [href rel] :as ent}]
+  (dom/a #js{:href (ent->fragment ent)} (first rel)))
+
+(defn link-to-action [ent {:keys [title] :as action}]
+  (dom/a #js{:href (action->fragment ent action)} title))
 
 (defn wrap-list [title ls]
   (when (not (empty? ls))
@@ -32,7 +43,7 @@
   (wrap-list "Links" (map link-to-entity (:links ent))))
 
 (defn actions-list [ent]
-  (wrap-list "Actions" (map link-to-action (:actions ent))))
+  (wrap-list "Actions" (map #(link-to-action ent %) (:actions ent))))
 
 (defn display-name [ent]
   (or
