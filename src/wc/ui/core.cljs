@@ -6,7 +6,7 @@
 (enable-console-print!)
 
 (defn render! []
-  (debug/attach-inspector state/state :form)
+  ;(debug/attach-inspector state/state)
   (om/root app/component state/state
    {:target (. js/document (getElementById "app"))}))
 

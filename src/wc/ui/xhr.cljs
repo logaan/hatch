@@ -1,6 +1,7 @@
 (ns wc.ui.xhr
-  (:require [uri.core    :as uri]
-            [goog.events :as events])
+  (:require [cljs.reader :as reader]
+            [goog.events :as events]
+            [uri.core    :as uri])
   (:import goog.net.XhrIo
            goog.net.EventType))
 
@@ -25,3 +26,16 @@
         (fn [e] (on-complete xhr e))))
 
     (.send xhr url method data headers)))
+
+(defn ->edn [xhr]
+  (reader/read-string (.getResponseText xhr)))
+
+(defn header [xhr header]
+  (.getResponseHeader xhr "Location"))
+
+(def status [xhr]
+  (.getStatus xhr))
+
+(def ok         200)
+(def created    201)
+(def no-content 204)

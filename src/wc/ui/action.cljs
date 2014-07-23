@@ -25,7 +25,7 @@
   [action form]
    (fn [ev]
      (.preventDefault ev)
-     (state/perform-action! @action @form)))
+     (state/exec-action! @action @form)))
 
 (defn action-form [{:keys [action form]}]
   (apply dom/form nil
