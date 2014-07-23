@@ -19,3 +19,8 @@
          (.setScheme ""))
        uri
        ))))
+
+(defn fragment [url]
+  (let [uri (.parse goog.Uri url)])
+   (when (.hasFragment uri)
+     (.getFragment uri)))
