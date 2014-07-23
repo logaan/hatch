@@ -14,13 +14,13 @@
   (and (or (= method-pat :any) (= method-pat method))
        (or (= type-pat   :any) (= type-pat type))))
 
+(def edn "application/edn")
+
 (defn format-data [method url type data]
-  (let [edn "application/edn"
-        post-headers #js{"Content-Type" type}]
-   (condp match [method type]
-     ["GET" :any] [(format-query url data) nil nil]
-     [:any   edn] [url post-headers (pr-str data)]
-     [:any   nil] [url nil nil])))
+  (condp match [method type]
+    ["GET" :any] [(format-query url data) nil nil]
+    [:any   edn] [url #js{"Content-Type" type} (pr-str data)]
+    [:any   nil] [url nil nil]))
 
 (defn req [{:keys [method url type data on-complete]}]
   (let [[url headers data] (format-data method url type data)
