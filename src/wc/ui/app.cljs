@@ -19,6 +19,5 @@
 (defn init! []
   (history/init
    (fn [token]
-     (js/console.log "Hash Changed: " token)
      (state/present!
       (if (= token "") "/" token)))))

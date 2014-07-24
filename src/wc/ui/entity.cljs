@@ -22,13 +22,12 @@
 (defn actions-list [ent]
   (wrap-list "Actions" (map #(util/link-to-action ent %) (:actions ent))))
 
+(defn find-key-pred [pred coll]
+  (let [[[_ v]] (filter (fn [[k _]] (pred k)) coll)] v))
+
 (defn display-name [ent]
-  (or
-   (-> ent :properties :title)
-   (let [[[_ v]]
-         (filter (fn [[k v]] (= "name" (name k)))
-                 (ent :properties))]
-     v)))
+  (or (-> ent :properties :title)
+      (find-key-pred #(= "name" (name %)) (:properties ent))))
 
 (defn component [ent owner]
   (reify

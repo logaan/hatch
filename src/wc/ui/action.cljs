@@ -5,21 +5,24 @@
             [wc.ui.entity :as entity]
             [wc.ui.xhr    :as xhr]))
 
-(defn editable [{:keys [form field-key]} owner]
+(defn on-change [form field-key]
+  (fn [e] (om/transact! form field-key (fn [_] (.. e -target -value)))))
+
+(defn editable [{form :form {field-key :name} :field} owner]
   (reify
     om/IRender
     (render [this]
-      (dom/div nil
-        (dom/label nil (str (name field-key) ": "))
-        (dom/input
-         #js{:type "text"
-             :onChange
-             (fn [e]
-               (om/transact! form field-key (fn [_] (.. e -target -value))))}))
-    )))
+      (dom/div
+       nil
+       (dom/label nil (str (name field-key) ": "))
+       (dom/input
+        #js{:type "text"
+            :onChange
+            (on-change form field-key)}))
+      )))
 
-(defn field->editable [form {field-key :name field-type :type}]
-  (om/build editable {:form form :field-key field-key}))
+(defn field->editable [form field]
+  (om/build editable {:form form :field field}))
 
 (defn on-submit
   [action form]
