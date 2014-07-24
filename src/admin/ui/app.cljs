@@ -1,11 +1,17 @@
 (ns admin.ui.app
   (:require [om.core :as om  :include-macros true]
             [om.dom  :as dom :include-macros true]
-            [uri.core      :as uri]
+            [uri.core         :as uri]
             [admin.ui.state   :as state]
             [admin.ui.entity  :as entity]
             [admin.ui.action  :as action]
             [admin.ui.history :as history]))
+
+(defonce state (atom {}))
+
+(defn present! [href])
+
+(defn perform-action! [action form])
 
 (defn component [data owner]
   (reify
@@ -19,5 +25,5 @@
 (defn init! []
   (history/init
    (fn [token]
-     (state/present!
+     (present!
       (if (= token "") "/" token)))))

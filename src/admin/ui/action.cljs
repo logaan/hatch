@@ -1,7 +1,6 @@
 (ns admin.ui.action
   (:require [om.core :as om  :include-macros true]
-            [om.dom  :as dom :include-macros true]
-            [admin.ui.state :as state]))
+            [om.dom  :as dom :include-macros true]))
 
 (defn on-change [form field-key]
   (fn [e] (om/transact! form field-key (fn [_] (.. e -target -value)))))
@@ -26,7 +25,7 @@
   [action form]
    (fn [ev]
      (.preventDefault ev)
-     (state/perform-action! @action @form)))
+     #_(state/perform-action! @action @form))) ;; FIXME
 
 (defn action-form [{:keys [action form]}]
   (apply dom/form nil

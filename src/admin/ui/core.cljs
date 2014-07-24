@@ -1,13 +1,10 @@
 (ns admin.ui.core
-  (:require [om.core     :as om]
-            [admin.ui.app   :as app]
-            [admin.ui.state :as state]))
-
-(enable-console-print!)
+  (:require [om.core      :as om]
+            [admin.ui.app :as app]))
 
 (defn render! []
-  (debug/attach-inspector state/state #(dissoc % :entity))
-  (om/root app/component state/state
+  (debug/attach-inspector app/state #(dissoc % :entity))
+  (om/root app/component app/state
    {:target (js/document.getElementById "app")}))
 
 (app/init!)
