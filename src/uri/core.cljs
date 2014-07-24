@@ -29,3 +29,9 @@
   (let [uri (.parse goog.Uri url)]
    (.setFragment uri "")
    (.toString uri)))
+
+(defn split-fragment [url]
+  (let [uri  (.parse goog.Uri url)
+        frag (when (.hasFragment uri) (.getFragment uri))
+        base (do (.setFragment uri "") (.toString uri))]
+    [base frag]))

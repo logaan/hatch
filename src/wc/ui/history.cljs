@@ -1,10 +1,10 @@
 (ns wc.ui.history
   (:require [goog.events :as events]
             [uri.core    :as uri])
-  (:import goog.History
+  (:import goog.history.Html5History
            goog.history.EventType))
 
-(def history (new goog.History))
+(def history (new goog.history.Html5History))
 
 (defn init [f]
   (events/listen history goog.history.EventType.NAVIGATE

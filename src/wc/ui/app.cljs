@@ -19,7 +19,6 @@
 (defn init! []
   (history/init
    (fn [token]
-     (when-let [action-name (uri/fragment token)]
-       (state/perform-action-named! action-name)) ;; FIXME
+     (js/console.log "Hash Changed: " token)
      (state/present!
       (if (= token "") "/" token)))))
