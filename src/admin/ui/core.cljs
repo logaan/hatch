@@ -1,7 +1,7 @@
-(ns wc.ui.core
+(ns admin.ui.core
   (:require [om.core     :as om]
-            [wc.ui.app   :as app]
-            [wc.ui.state :as state]))
+            [admin.ui.app   :as app]
+            [admin.ui.state :as state]))
 
 (enable-console-print!)
 

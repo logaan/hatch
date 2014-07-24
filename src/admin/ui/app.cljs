@@ -1,11 +1,11 @@
-(ns wc.ui.app
+(ns admin.ui.app
   (:require [om.core :as om  :include-macros true]
             [om.dom  :as dom :include-macros true]
             [uri.core      :as uri]
-            [wc.ui.state   :as state]
-            [wc.ui.entity  :as entity]
-            [wc.ui.action  :as action]
-            [wc.ui.history :as history]))
+            [admin.ui.state   :as state]
+            [admin.ui.entity  :as entity]
+            [admin.ui.action  :as action]
+            [admin.ui.history :as history]))
 
 (defn component [data owner]
   (reify

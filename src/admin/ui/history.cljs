@@ -1,4 +1,4 @@
-(ns wc.ui.history
+(ns admin.ui.history
   (:require [goog.events :as events]
             [uri.core    :as uri])
   (:import goog.history.Html5History

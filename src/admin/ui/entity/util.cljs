@@ -1,4 +1,4 @@
-(ns wc.ui.entity.util
+(ns admin.ui.entity.util
   (:require [om.dom     :as dom]
             [uri.core   :as uri]
             [siren.core :as siren]))

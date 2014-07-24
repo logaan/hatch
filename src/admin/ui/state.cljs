@@ -1,8 +1,8 @@
-(ns wc.ui.state
-  (:require [uri.core      :as uri]
-            [siren.core    :as siren]
-            [wc.ui.history :as history]
-            [wc.ui.xhr     :as xhr]))
+(ns admin.ui.state
+  (:require [uri.core         :as uri]
+            [siren.core       :as siren]
+            [admin.xhr        :as xhr]
+            [admin.ui.history :as history]))
 
 (defonce state (atom {}))
 

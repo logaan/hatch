@@ -1,9 +1,7 @@
-(ns wc.ui.action
+(ns admin.ui.action
   (:require [om.core :as om  :include-macros true]
             [om.dom  :as dom :include-macros true]
-            [wc.ui.state  :as state]
-            [wc.ui.entity :as entity]
-            [wc.ui.xhr    :as xhr]))
+            [admin.ui.state :as state]))
 
 (defn on-change [form field-key]
   (fn [e] (om/transact! form field-key (fn [_] (.. e -target -value)))))

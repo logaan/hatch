@@ -1,4 +1,4 @@
-(ns wc.ui.xhr
+(ns admin.xhr
   (:require [cljs.reader :as reader]
             [goog.events :as events]
             [uri.core    :as uri])

@@ -1,8 +1,7 @@
-(ns wc.ui.entity
-  (:require [om.core    :as om  :include-macros true]
-            [om.dom     :as dom :include-macros true]
-            [uri.core   :as uri]
-            [wc.ui.entity.util :as util]))
+(ns admin.ui.entity
+  (:require [om.core :as om  :include-macros true]
+            [om.dom  :as dom :include-macros true]
+            [admin.ui.entity.util :as util]))
 
 (defn wrap-list [title ls]
   (when (not (empty? ls))
