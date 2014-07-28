@@ -25,7 +25,8 @@
   [action form]
    (fn [ev]
      (.preventDefault ev)
-     #_(state/perform-action! @action @form))) ;; FIXME
+     ;; TODO something useful here
+     ))
 
 (defn action-form [{:keys [action form]}]
   (apply dom/form nil
