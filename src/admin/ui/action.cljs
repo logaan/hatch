@@ -3,7 +3,7 @@
             [om.dom  :as dom :include-macros true]))
 
 (defn on-change [form field-key]
-  (fn [e] (om/transact! form field-key (fn [_] (.. e -target -value)))))
+  (fn [e] (om/update! form field-key (.. e -target -value))))
 
 (defn editable [{form :form {field-key :name} :field} owner]
   (reify
@@ -37,10 +37,9 @@
                       :onClick (on-submit action form)})])))
 
 (defn component [data owner]
-  (reify
-    om/IRender
-    (render [this]
-      (dom/div nil
-        (dom/h1 nil (get-in data [:action :title]))
-        (action-form data)
-        ))))
+  (om/component
+   (dom/div
+    nil
+    (dom/h1 nil (get-in data [:action :title]))
+    (action-form data)
+    )))

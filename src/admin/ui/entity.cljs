@@ -29,13 +29,11 @@
       (find-key-pred #(= "name" (name %)) (:properties ent))))
 
 (defn component [ent owner]
-  (reify
-    om/IRender
-    (render [this]
-      (dom/div
-       nil
-       (dom/h4 nil (display-name ent))
-       (links-list    ent)
-       (entities-list ent)
-       (actions-list  ent)
-       ))))
+  (om/component
+   (dom/div
+    nil
+    (dom/h4 nil (display-name ent))
+    (links-list    ent)
+    (entities-list ent)
+    (actions-list  ent)
+    )))

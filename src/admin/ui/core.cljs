@@ -9,5 +9,4 @@
   (om/root app/component state
    {:target (js/document.getElementById "app")}))
 
-(app/init!)
 (render!)
