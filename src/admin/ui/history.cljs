@@ -6,7 +6,7 @@
 
 (def history (new goog.history.Html5History))
 
-(defn init [f]
+(defn watch [f]
   (events/listen history goog.history.EventType.NAVIGATE
                  (fn [e] (f (.-token e))))
   (.setEnabled history true))

@@ -2,9 +2,11 @@
   (:require [om.core      :as om]
             [admin.ui.app :as app]))
 
+(defonce state (atom {}))
+
 (defn render! []
   (debug/attach-inspector app/state #(dissoc % :entity))
-  (om/root app/component app/state
+  (om/root app/component state
    {:target (js/document.getElementById "app")}))
 
 (app/init!)

@@ -17,4 +17,5 @@
                               :output-dir "resources/test/js"
                               :optimizations :none
                               :source-map "resources/test/js/main.js.map"}}}}
-  :profiles {:dev {:dependencies [[ankha "0.1.4-SNAPSHOT"]]}})
+  :profiles {:dev {:dependencies [[ankha "0.1.4-SNAPSHOT"]]
+                   :plugins [[com.cemerick/austin "0.1.4"]]}})

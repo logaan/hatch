@@ -7,12 +7,6 @@
             [admin.ui.action  :as action]
             [admin.ui.history :as history]))
 
-(defonce state (atom {}))
-
-(defn present! [href])
-
-(defn perform-action! [action form])
-
 (defn component [data owner]
   (reify
     om/IRender
@@ -22,8 +16,9 @@
         (:entity data) (om/build entity/component (:entity data))
         :else          (dom/div nil)))))
 
+(defn present! [href])
+
 (defn init! []
-  (history/init
+  (history/watch
    (fn [token]
-     (present!
-      (if (= token "") "/" token)))))
+     (present! (if (= token "") "/" token)))))
