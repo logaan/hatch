@@ -21,14 +21,14 @@
    [{:class ["host"],
      :rel ["host"],
      :href "http://localhost:8080/hosts/17592186046789",
-     :properties {:db/id 17592186046789, :host/name "aaa"},
+     :properties {:db/id 17592186046789, :host/name "Plato's Academy"},
      :links
      [{:rel ["self"],
        :href "http://localhost:8080/hosts/17592186046789"}]}
     {:class ["host"],
      :rel ["host"],
      :href "http://localhost:8080/hosts/17592186046796",
-     :properties {:db/id 17592186046796, :host/name "bbb"},
+     :properties {:db/id 17592186046796, :host/name "Aristotle's Lyceum"},
      :links
      [{:rel ["self"],
        :href "http://localhost:8080/hosts/17592186046796"}]}],
@@ -49,7 +49,7 @@
 
 (def host-data
   {:class "host",
-   :properties {:db/id 17592186046789, :host/name "aaa"},
+   :properties {:db/id 17592186046789, :host/name "Robert Norzick School of Liberty"},
    :links
    [{:rel ["self"], :href "http://localhost:8080/hosts/17592186046789"}
     {:rel ["listing"], :href "http://localhost:8080/hosts"}],
