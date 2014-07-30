@@ -8,7 +8,7 @@
 (defn page [data owner]
   (om/component
    (dom/div
-    nil
+    #js{:className "container"}
     (om/build nav/component    test-data/nav-data)
     (om/build entity/component test-data/ent))))
 
