@@ -5,7 +5,7 @@
   (:import goog.net.XhrIo
            goog.net.EventType))
 
-(defn req [{:keys [method url type data on-complete]}]
+(defn req [{:keys [method url type data headers on-complete]}]
   (let [xhr (new goog.net.XhrIo)]
 
     (when on-complete
