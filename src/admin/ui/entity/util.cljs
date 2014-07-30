@@ -4,46 +4,56 @@
             [uri.core    :as uri]
             [siren.core  :as siren]))
 
-(defn find-key-pred [pred coll]
+(defn find-key [pred coll]
   (let [[[_ v]] (filter (fn [[k _]] (pred k)) coll)] v))
 
 (defn name-prop? [prop]
   (= (name prop) "name"))
 
-(defn display-name [ent]
-  (or (find-key-pred name-prop? (:properties ent))
-      (let [class (:class ent)]
-        (if (string? class) class (first class)))))
+(defn ->class [ent]
+  (let [class (:class ent)]
+    (if (string? class) class (first class))))
 
-(defn ent->href [ent]
+(defn display-name [ent]
+  (or (find-key name-prop? (:properties ent))
+      (->class ent)))
+
+(defn ->href [ent]
   (or (:href ent)
       (siren/get-link ent "self")))
 
-(defn ent->fragment [ent]
-  (str "#" (uri/relative (ent->href ent))))
+(defn ->fragment [ent]
+  (str "#" (uri/relative (->href ent))))
 
 (defn action->fragment [ent action]
-  (str (ent->fragment ent) "#" (:name action)))
+  (str (->fragment ent) "#" (:name action)))
 
 (defn ent->a [ent body]
-  (dom/a #js{:href (ent->fragment ent)} body))
+  (dom/a #js{:href (->fragment ent)} body))
 
 (defn link->a [link]
-  (dom/a link (-> link :rel first)))
+  (dom/a #js{:href (->fragment ent)}
+         (-> link :rel first)))
 
-(defn action->a [ent {:keys [title] :as action}]
-  (dom/a #js{:href (action->fragment ent action)} title))
+(defn action->class [action]
+  (condp = (:method action)
+    "POST"   "btn-success"
+    "DELETE" "btn-danger"
+    "btn-default"))
 
 (defn action->button [ent {:keys [title] :as action}]
-  (dom/a #js{:className "btn btn-default action"
+  (dom/a #js{:className (str "action btn "
+                             (action->class action))
              :href (action->fragment ent action)} title))
 
 (defn subaction->button [ent {:keys [title] :as action}]
-  (dom/a #js{:className "btn btn-xs btn-default action subaction"
+  (dom/a #js{:className (str "action subaction btn btn-xs "
+                             (action->class action))
              :href (action->fragment ent action)} title))
 
 (defn non-self-links [ent]
-  (filter #(not (some #{"self"} (:rel %))) (:links ent)))
+  (filter #(not (some #{"self"} (:rel %)))
+          (:links ent)))
 
 (defn wrap-list [className ls]
   (when (not (empty? ls))

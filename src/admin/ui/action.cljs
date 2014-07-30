@@ -29,13 +29,16 @@
      ))
 
 (defn action-form [{:keys [action form]}]
-  (apply dom/form nil
-    (concat
-      (for [field (:fields action)]
-        (field->editable form field))
-      [(dom/input #js{:type "submit"
-                      :value "Submit"
-                      :onClick (on-submit action form)})])))
+  (apply
+   dom/form
+   nil
+   (concat
+    (for [field (:fields action)]
+      (field->editable form field))
+    [(dom/button #js{:type "submit"
+                     :className "btn btn-primary"
+                     :onClick (on-submit action form)}
+                 "Submit")])))
 
 (defn component [data owner]
   (om/component
