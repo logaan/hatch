@@ -3,37 +3,73 @@
             [om.dom  :as dom :include-macros true]
             [admin.ui.entity.util :as util]))
 
-(defn wrap-list [title ls]
-  (when (not (empty? ls))
-    (dom/div nil
-            (dom/h5 nil title)
-            (apply dom/ul nil
-                   (map #(dom/li nil %) ls)))))
+(defn subentity-row [props ent]
+  (apply
+   dom/tr
+   nil
+   (map #(dom/td nil %)
+    (concat
+     (for [prop props
+           :let [value ((:properties ent) prop)]]
+       (if (util/name-prop? prop)
+         (util/ent->a ent value)
+         value))
+     [(subactions ent)]))))
 
-(declare component)
+(defn thead [props]
+  (dom/thead
+   nil
+   (apply
+    dom/tr
+    nil
+    (concat
+     (for [prop props]
+       (dom/th nil (name prop)))
+     [(dom/th nil)]))))
 
-(defn entities-list [ent]
-  (wrap-list "Entities" (om/build-all component (:entities ent))))
+(defn subent-table [ents]
+  (let [props (util/union-props ents)]
+    (dom/table
+     #js{:className "table table-striped"}
+     (thead props)
+     (apply
+      dom/tbody
+      nil
+      (map #(subentity-row props %) ents)))))
+
+(defn subentities [ent]
+  (let [ents (:entities ent)]
+    (when (not (empty? ents))
+      (subent-table ents))))
 
 (defn links-list [ent]
-  (wrap-list "Links" (map util/link-to-entity (:links ent))))
+  (let [links (util/non-self-links ent)]
+    (util/wrap-list "links"
+     (map util/link->a links))))
 
-(defn actions-list [ent]
-  (wrap-list "Actions" (map #(util/link-to-action ent %) (:actions ent))))
+(defn actions [ent]
+  (apply dom/div
+         #js{:className "actions"}
+         (map #(util/action->button ent %)
+              (:actions ent))))
 
-(defn find-key-pred [pred coll]
-  (let [[[_ v]] (filter (fn [[k _]] (pred k)) coll)] v))
+(defn subactions [ent]
+  (apply dom/div
+         #js{:className "subactions"}
+         (map #(util/subaction->button ent %)
+              (:actions ent))))
 
-(defn display-name [ent]
-  (or (-> ent :properties :title)
-      (find-key-pred #(= "name" (name %)) (:properties ent))))
+(defn title [ent]
+  (dom/h1 #js{:className "title"}
+          (util/display-name ent)))
 
 (defn component [ent owner]
   (om/component
    (dom/div
     nil
-    (dom/h4 nil (display-name ent))
-    (links-list    ent)
-    (entities-list ent)
-    (actions-list  ent)
+    (title       ent)
+    (actions     ent)
+    (dom/hr nil)
+    (subentities ent)
+    (links-list  ent)
     )))

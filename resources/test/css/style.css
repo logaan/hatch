@@ -1,15 +1,12 @@
-::-webkit-scrollbar
-{
-  width: 12px;  /* for vertical scrollbars */
-  height: 12px; /* for horizontal scrollbars */
+.title {
+  text-transform: capitalize;
 }
 
-::-webkit-scrollbar-track
-{
-  background: #333;
+.action {
+  display: inline-block;
+  margin-right: 1em;
 }
 
-::-webkit-scrollbar-thumb
-{
-  background: #888;
+.subaction {
+  margin-right: 0.5em;
 }
