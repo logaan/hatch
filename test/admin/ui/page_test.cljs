@@ -5,7 +5,7 @@
             [admin.ui.nav :as nav]
             [admin.ui.entity :as entity]))
 
-(defn app [data owner]
+(defn page [data owner]
   (om/component
    (dom/div
     nil
@@ -13,7 +13,7 @@
     (om/build entity/component test-data/ent))))
 
 (defn render! []
-  (om/root app {}
+  (om/root page {}
            {:target (js/document.getElementById "app")}))
 
 (render!)
