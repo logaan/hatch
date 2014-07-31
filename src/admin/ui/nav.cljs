@@ -1,16 +1,18 @@
 (ns admin.ui.nav
   (:require [om.core :as om  :include-macros true]
-            [om.dom  :as dom :include-macros true]))
+            [om.dom  :as dom :include-macros true]
+            [siren.core :as siren]
+            [admin.ui.entity.util :as util]))
 
-(defn nav-items [items]
+(defn nav-items [links]
   (dom/div
    #js{:className "navbar-collapse collapse"}
    (apply dom/ul
           #js{:className "nav navbar-nav"}
-          (for [{:keys [label href active]} items]
+          (for [link links]
             (dom/li
-             #js{:className (if active "active")}
-             (dom/a #js{:href href} label))))))
+             #js{:className "" #_"active"}
+             (util/link->a link))))))
 
 (defn collapse-button []
   (dom/button
@@ -23,10 +25,10 @@
    (dom/span #js{:className "icon-bar"})
    (dom/span #js{:className "icon-bar"})))
 
-(defn brand [{:keys [label href]}]
-  (dom/a #js{:className "navbar-brand" :href href} label))
+(defn brand [title href]
+  (dom/a #js{:className "navbar-brand" :href href} title))
 
-(defn component [data owner]
+(defn component [{:keys [title entity]} owner]
   (om/component
    (dom/div
     #js{:className "navbar navbar-default"
@@ -35,7 +37,7 @@
      #js{:className "container-fluid"}
      (dom/div
       #js{:className "navbar-header"}
-      (brand (:title data))
+      (brand title (util/->fragment entity))
       (collapse-button))
-     (nav-items (:items data))
+     (nav-items (util/non-self-links entity))
      ))))

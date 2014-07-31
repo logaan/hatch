@@ -32,7 +32,7 @@
   (dom/a #js{:href (->fragment ent)} body))
 
 (defn link->a [link]
-  (dom/a #js{:href (->fragment ent)}
+  (dom/a #js{:href (->fragment link)}
          (-> link :rel first)))
 
 (defn action->class [action]

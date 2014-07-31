@@ -4,16 +4,16 @@
             [admin.ui.nav :as nav]
             [admin.ui.app :as app]
             [admin.ui.test-data :as test-data]
+            [admin.xhr :as xhr]
             ))
 
-(defonce state
-  (atom
-   {:nav
-    {:title {:label "Webcasting" :href "#"}
-     :items [{:label "Hosts"  :href "#/hosts" :active true}
-             {:label "Events" :href "#/events"}]}
-    :app {:entity test-data/hosts-data}
-    }))
+(defonce state (atom nil))
+
+(reset!
+ state
+ {:nav {}
+  :app {:entity test-data/hosts-data}
+  })
 
 (defn page [data owner]
   (om/component
@@ -29,3 +29,12 @@
    {:target (js/document.getElementById "app")}))
 
 (render!)
+
+(comment
+ (xhr/req
+  {:method "GET"
+   :url "/"
+   :on-complete
+   (fn [xhr e]
+     (js/console.log
+      (.getResponseText xhr)))}))

@@ -127,7 +127,13 @@
    {:action action
     :form   {}})
 
+(def root-ent
+  {:class "index",
+   :links
+   [{:rel ["self"],   :href "http://localhost:8080/"}
+    {:rel ["hosts"],  :href "http://localhost:8080/hosts"}
+    {:rel ["events"], :href "http://localhost:8080/events"}]})
+
 (def nav-data
-  {:title {:label "Webcasting" :href "#"}
-   :items [{:label "Hosts"  :href "#/hosts" :active true}
-           {:label "Events" :href "#/events"}]})
+  {:title "Webcasting"
+   :entity root-ent})

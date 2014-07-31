@@ -2,6 +2,10 @@
   text-transform: capitalize;
 }
 
+.nav a {
+  text-transform: capitalize;
+}
+
 .action {
   display: inline-block;
   margin-right: 1em;
