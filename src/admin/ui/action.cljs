@@ -2,10 +2,10 @@
   (:require [om.core :as om  :include-macros true]
             [om.dom  :as dom :include-macros true]))
 
-(defn on-change [form field-key]
-  (fn [e] (om/update! form field-key (.. e -target -value))))
+(defn on-change [values field-key]
+  (fn [e] (om/update! values field-key (.. e -target -value))))
 
-(defn editable [{form :form {field-key :name} :field} owner]
+(defn editable [{values :values {field-key :name} :field} owner]
   (reify
     om/IRender
     (render [this]
@@ -15,29 +15,29 @@
        (dom/input
         #js{:type "text"
             :onChange
-            (on-change form field-key)}))
+            (on-change values field-key)}))
       )))
 
-(defn field->editable [form field]
-  (om/build editable {:form form :field field}))
+(defn field->editable [values field]
+  (om/build editable {:values values :field field}))
 
 (defn on-submit
-  [action form]
+  [action values]
    (fn [ev]
      (.preventDefault ev)
      ;; TODO something useful here
      ))
 
-(defn action-form [{:keys [action form]}]
+(defn action-form [{:keys [action values]}]
   (apply
    dom/form
    nil
    (concat
     (for [field (:fields action)]
-      (field->editable form field))
+      (field->editable values field))
     [(dom/button #js{:type "submit"
                      :className "btn btn-primary"
-                     :onClick (on-submit action form)}
+                     :onClick (on-submit action values)}
                  "Submit")])))
 
 (defn component [data owner]

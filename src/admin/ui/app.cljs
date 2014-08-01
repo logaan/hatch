@@ -12,8 +12,7 @@
 
 (defn show-action [cursor act-name]
   (when-let [act (siren/get-action (:entity @cursor) act-name)]
-    (om/update! cursor :action act)
-    (om/update! cursor :form {})))
+    (om/update! cursor :form {:action act :values {}})))
 
 (defn set-pending-action [cursor act-name]
   (om/update! cursor :pending-action act-name))
@@ -50,11 +49,10 @@
     :url href
     :on-complete
     (fn [res ev]
-      (if (> (.getStatus res) 0)
-        (do
-          (om/update! cursor :current-request nil)
-          (loading/finish-loading! cursor)
-          (on-response! cursor res))))}))
+      (when (> (.getStatus res) 0)
+        (om/update! cursor :current-request nil)
+        (loading/finish-loading! cursor)
+        (on-response! cursor res)))}))
 
 (defn request-entity [cursor href]
   (when-let [req (:current-request @cursor)]
@@ -87,6 +85,6 @@
     om/IRender
     (render [this]
       (cond
-        (:action data) (om/build action/component (select-keys data [:action :form]))
+        (:form   data) (om/build action/component (:form   data))
         (:entity data) (om/build entity/component (:entity data))
         :else          (dom/div nil)))))
