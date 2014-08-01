@@ -16,14 +16,12 @@
 (def http-ok         200)
 (def http-created    201)
 (def http-no-content 204)
-(def http-not-found  404)
 
 (defn on-response! [cursor res]
   (condp = (.getStatus res)
     http-ok         (on-entity-ok cursor (xhr/->edn res))
     http-created    (history/goto! (.getResponseHeader res "Location"))
     http-no-content (history/goto! (siren/self (:entity @cursor)))
-    http-not-found  nil ;; TODO
     ))
 
 (defn exec-action!
@@ -70,7 +68,6 @@
 
 (defn on-entity-ok [cursor ent]
   (let [self (uri/relative (siren/self ent))]
-    (js/console.log "on-entity-ok:" self (:entity-url @cursor))
     (when (not= self (:entity-url @cursor))
       (om/update! cursor :entity-url self)
       (history/goto! self)))
@@ -79,7 +76,6 @@
   (do-pending-action cursor))
 
 (defn get-entity [cursor href]
-  (js/console.log "get-entity:" href)
   (loading/begin-loading! cursor)
   (xhr/req
    {:method "GET"
