@@ -1,5 +1,5 @@
 (ns admin.ui.state
-  (:require [uri.core   :as uri]
-            [siren.core :as siren]))
-
-(defn transition [state ev])
+  (:require [om.core    :as om]
+            [uri.core   :as uri]
+            [siren.core :as siren]
+            [admin.xhr  :as xhr]))

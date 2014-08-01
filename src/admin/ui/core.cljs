@@ -12,7 +12,7 @@
  state
  {:nav {:title "Webcasting"
         :loader nav/load-root-entity}
-  :app nil
+  :app {}
   })
 
 (defn page [data owner]
@@ -23,16 +23,9 @@
     (om/build app/component (:app data)))))
 
 (defn render! []
-  (debug/attach-inspector state
-   #_#(update-in % [:app] assoc :entity "..."))
+  #_(debug/attach-inspector state
+   #(update-in % [:app] assoc :entity "..."))
   (om/root page state
    {:target (js/document.getElementById "app")}))
 
 (render!)
-
-(xhr/req
- {:method "GET"
-  :url "/hosts"
-  :on-complete
-  (fn [xhr e]
-    (swap! state assoc-in [:app :entity] (xhr/->edn xhr)))})
