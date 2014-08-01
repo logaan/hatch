@@ -7,6 +7,9 @@
        first
        :href))
 
+(defn self [ent]
+  (get-link ent "self"))
+
 (defn get-action [ent action-name]
   (->> ent
        :actions

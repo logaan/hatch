@@ -8,6 +8,9 @@
   (om/root ankha/inspector inspected
    {:target (js/document.getElementById "inspector")}))
 
+(defn clear [col path]
+  (update-in col path #(if (nil? %) nil "...")))
+
 (defn inspect! [v]
   (reset! inspected v)
   (render!))

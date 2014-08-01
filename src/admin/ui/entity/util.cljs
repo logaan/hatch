@@ -20,7 +20,7 @@
 
 (defn ->href [ent]
   (or (:href ent)
-      (siren/get-link ent "self")))
+      (siren/self ent)))
 
 (defn ->fragment [ent]
   (str "#" (uri/relative (->href ent))))

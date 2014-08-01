@@ -6,10 +6,15 @@
 
 (def history (new goog.history.Html5History))
 
+(defn defer [f]
+  (js/setTimeout f 0))
+
 (defn watch [f]
-  (events/listen history goog.history.EventType.NAVIGATE
-                 (fn [e] (f (.-token e))))
-  (.setEnabled history true))
+  (defer
+    (fn []
+      (events/listen history goog.history.EventType.NAVIGATE
+                     (fn [e] (f (.-token e))))
+      (.setEnabled history true))))
 
 (defn goto! [loc]
   (.setToken history (uri/relative loc)))

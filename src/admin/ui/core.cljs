@@ -23,8 +23,11 @@
     (om/build app/component (:app data)))))
 
 (defn render! []
-  #_(debug/attach-inspector state
-   #(update-in % [:app] assoc :entity "..."))
+  (debug/attach-inspector state
+   #(-> %
+        (debug/clear [:app :entity])
+        (debug/clear [:app :current-request])
+        (debug/clear [:nav])))
   (om/root page state
    {:target (js/document.getElementById "app")}))
 
