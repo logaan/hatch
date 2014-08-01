@@ -15839,10 +15839,6 @@ function isValidComponentDescriptor(descriptor) {
  */
 function instantiateReactComponent(descriptor) {
   if ("production" !== "development") {
-    ("production" !== "development" ? warning(
-      isValidComponentDescriptor(descriptor),
-      'Only React Components are valid for mounting.'
-    ) : null);
     // We use the clone of a composite component instead of the original
     // instance. This allows us to warn you if you're are accessing the wrong
     // instance.
