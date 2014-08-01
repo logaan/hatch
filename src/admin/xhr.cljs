@@ -15,3 +15,6 @@
     (.send xhr url method data headers)
 
     xhr))
+
+(defn ->edn [xhr]
+  (reader/read-string (.getResponseText xhr)))

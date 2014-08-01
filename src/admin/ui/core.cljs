@@ -3,7 +3,6 @@
             [om.dom  :as dom :include-macros true]
             [admin.ui.nav :as nav]
             [admin.ui.app :as app]
-            [admin.ui.test-data :as test-data]
             [admin.xhr :as xhr]
             ))
 
@@ -11,8 +10,8 @@
 
 (reset!
  state
- {:nav {}
-  :app {:entity test-data/hosts-data}
+ {:nav {:title "Webcasting"}
+  :app nil
   })
 
 (defn page [data owner]
@@ -23,18 +22,16 @@
     (om/build app/component (:app data)))))
 
 (defn render! []
-  #_(debug/attach-inspector state
+  (debug/attach-inspector state
    #(update-in % [:app] assoc :entity "..."))
   (om/root page state
    {:target (js/document.getElementById "app")}))
 
 (render!)
 
-(comment
- (xhr/req
-  {:method "GET"
-   :url "/"
-   :on-complete
-   (fn [xhr e]
-     (js/console.log
-      (.getResponseText xhr)))}))
+(xhr/req
+ {:method "GET"
+  :url "/"
+  :on-complete
+  (fn [xhr e]
+    (swap! data assoc-in [:app :entity] (xhr/->edn xhr)))})
