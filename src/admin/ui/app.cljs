@@ -12,7 +12,10 @@
 
 (defn show-action [cursor act-name]
   (when-let [act (siren/get-action (:entity @cursor) act-name)]
-    (om/update! cursor :form {:action act :values {}})))
+    (om/update! cursor :form
+                {:action act
+                 :values {}
+                 :back (str "#" (:entity-url @cursor))})))
 
 (defn set-pending-action [cursor act-name]
   (om/update! cursor :pending-action act-name))

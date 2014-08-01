@@ -6,8 +6,17 @@
   text-transform: capitalize;
 }
 
+.property-name {
+  text-transform: capitalize;
+  font-weight: bold;
+  text-align: right;
+}
+
+.form-label {
+  text-transform: capitalize;
+}
+
 .action {
-  display: inline-block;
   margin-right: 1em;
 }
 

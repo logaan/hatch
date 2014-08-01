@@ -115,13 +115,55 @@
      :type "application/edn",
      :fields [{:name :host/name, :title "Name", :type :text}]}]})
 
+(def ent-w-props
+  {:class "video",
+   :properties
+   {"name" "2013 Australian Championship",
+    "embed_code" "RuY3dybjqjHRhxWynjaO-pmqND7Tc6JX",
+    "updated_at" #inst "2014-07-09T19:32:16.000-00:00",
+    "status" "live",
+    "preview_image_url"
+    "http://ak.c.ooyala.com/RnNXFxMjpguay62NBwy6zbh8N_OEfpJi/promo137893580",
+    "duration" 63589,
+    :db/id "RuY3dybjqjHRhxWynjaO-pmqND7Tc6JX",
+    "created_at" #inst "2014-07-09T19:24:08.000-00:00",
+    "asset_type" "channel",
+    "description" ""},
+   :links
+   [{:rel ["self"],
+     :href
+     "http://localhost:8080/videos/RuY3dybjqjHRhxWynjaO-pmqND7Tc6JX"}
+    {:rel ["listing"], :href "http://localhost:8080/videos"}],
+   :actions
+   [{:name "delete-video",
+     :title "Delete Video",
+     :method "DELETE",
+     :href
+     "http://localhost:8080/videos/RuY3dybjqjHRhxWynjaO-pmqND7Tc6JX"}
+    {:name "replace-video",
+     :title "Replace Video",
+     :method "PUT",
+     :href
+     "http://localhost:8080/videos/RuY3dybjqjHRhxWynjaO-pmqND7Tc6JX",
+     :type "application/edn",
+     :fields [{:name :video/name, :type :text, :title "Name"}]}]})
+
 (def action
-  {:name "add-host",
-   :title "Add Host",
+  {:name "add-event",
+   :title "Add Event",
    :method "POST",
-   :href "http://localhost:8080/hosts",
+   :href "http://localhost:8080/events",
    :type "application/edn",
-   :fields [{:name :host/name, :title "Name", :type :text}]})
+   :fields
+   [{:name :event/name, :type :text, :title "Name"}
+    {:name :event/host,
+     :value 17592186046789,
+     :type :radio,
+     :title "aaa"}
+    {:name :event/host,
+     :value 17592186046796,
+     :type :radio,
+     :title "bbb"}]})
 
 (def action-data
    {:action action

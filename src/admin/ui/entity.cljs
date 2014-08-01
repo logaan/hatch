@@ -15,6 +15,24 @@
    (map #(util/action->button ent %)
         (:actions ent))))
 
+(defn key->str [k]
+  (.replace (name k) (js/RegExp. "_" "g") " "))
+
+(defn prop->li [[k v]]
+  (dom/tr
+   nil
+   (dom/td #js{:className "property-name"}  (key->str k))
+   (dom/td #js{:className "property-value"}      (str v))))
+
+(defn properties [{props :properties}]
+  (when props
+    (dom/table
+     #js{:className "table table-striped properties"}
+     (apply
+      dom/tbody
+      nil
+      (map prop->li props)))))
+
 (defn links-list [ent]
   (let [links (util/non-self-links ent)]
     (util/wrap-list "links"
@@ -27,6 +45,7 @@
     (title        ent)
     (actions      ent)
     (dom/hr nil)
+    (properties   ent)
     (subent/table ent)
     (links-list   ent)
     )))
