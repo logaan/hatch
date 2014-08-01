@@ -70,14 +70,12 @@
       (field->editable values (first field-group))
       (fields->editable values field-group))))
 
-(defn on-submit
-  [action values]
-   (fn [ev]
-     (.preventDefault ev)
-     ;; TODO something useful here
-     ))
+(defn prevent-default [handler]
+  (fn default-preventer [ev]
+    (.preventDefault ev)
+    (handler ev)))
 
-(defn action-form [{:keys [action values]}]
+(defn action-form [{:keys [action values on-submit]}]
   (apply
    dom/form
    #js{:role "form"}
@@ -86,7 +84,7 @@
     [(dom/button
       #js{:type "submit"
           :className "btn btn-primary"
-          :onClick (on-submit action values)}
+          :onClick (prevent-default #(on-submit action values))}
                  "Submit")])))
 
 (defn component [data owner]
@@ -94,7 +92,7 @@
    (dom/div
     nil
     (dom/h1 nil (get-in data [:action :title]))
-    (dom/a #js{:href (:back data)} "back")
+    (dom/a #js{:href (:back-href data)} "back")
     (dom/hr nil)
     (action-form data)
     )))

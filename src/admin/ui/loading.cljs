@@ -7,4 +7,5 @@
 (defn finish-loading! [cursor]
   (om/update! cursor :loading false))
 
-
+(defn loading? [cursor]
+  (:loading @cursor))

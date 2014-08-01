@@ -18,7 +18,7 @@
 (defn key->str [k]
   (.replace (name k) (js/RegExp. "_" "g") " "))
 
-(defn prop->li [[k v]]
+(defn prop->tr [[k v]]
   (dom/tr
    nil
    (dom/td #js{:className "property-name"}  (key->str k))
@@ -31,7 +31,7 @@
      (apply
       dom/tbody
       nil
-      (map prop->li props)))))
+      (map prop->tr props)))))
 
 (defn links-list [ent]
   (let [links (util/non-self-links ent)]
