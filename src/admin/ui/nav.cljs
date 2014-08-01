@@ -5,6 +5,14 @@
             [admin.xhr :as xhr]
             [admin.ui.entity.util :as util]))
 
+(defn load-root-entity [on-entity]
+  (xhr/req
+   {:method "GET"
+    :url "/"
+    :on-complete
+    (fn [xhr e]
+      (on-entity (xhr/->edn xhr)))}))
+
 (defn nav-items [links]
   (dom/div
    #js{:className "navbar-collapse collapse"}
@@ -29,16 +37,16 @@
 (defn brand [title href]
   (dom/a #js{:className "navbar-brand" :href href} title))
 
-(defn component [{:keys [title entity] :as data} owner]
+(defn component [{:keys [title entity loader] :as data} owner]
   (reify
-    om/IDidMount
-    (did-mount [this]
-      (xhr/req
-       {:method "GET"
-        :url "/"
-        :on-complete
-        (fn [xhr e]
-          (om/update! data :entity (xhr/->edn xhr)))}))
+    om/IWillMount
+    (will-mount [this]
+     (when loader
+       (om/update! data :loading true)
+       (letfn [(on-entity [ent]
+                 (om/update! data :entity ent)
+                 (om/update! data :loading false))]
+         (loader on-entity))))
 
     om/IRender
     (render [this]
