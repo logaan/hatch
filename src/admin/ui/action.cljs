@@ -2,9 +2,6 @@
   (:require [om.core :as om  :include-macros true]
             [om.dom  :as dom :include-macros true]))
 
-(defn on-change [values field-key]
-  (fn [e] (om/update! values field-key (.. e -target -value))))
-
 (defn input [values {title :title field-key :name input-type :type}]
   (let [id (name (gensym))]
     (dom/div
@@ -18,7 +15,9 @@
           :className "form-control"
           :type (name input-type)
           :name (str field-key)
-          :onChange (on-change values field-key)}))))
+          :onChange
+          (fn [e]
+            (om/update! values field-key (.. e -target -value)))}))))
 
 (defn radio-input [values {:keys [title value] field-key :name}]
   (dom/div
@@ -29,7 +28,9 @@
      #js{:type "radio"
          :name  (str field-key)
          :value (str value)
-         :onChange (fn [_] (om/update! values field-key value))})
+         :onChange
+         (fn [_]
+           (om/update! values field-key value))})
     title)))
 
 (defn field->input [values {input-type :type :as field}]
