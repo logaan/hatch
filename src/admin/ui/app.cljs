@@ -18,11 +18,15 @@
 (def http-created    201)
 (def http-no-content 204)
 
+(defn goto-or-reload! [cursor href]
+  (om/update! cursor :reload true)
+  (history/goto! href))
+
 (defn on-response! [cursor res]
   (condp = (.getStatus res)
     http-ok         (on-entity-ok cursor (xhr/->edn res))
-    http-created    (history/goto! (.getResponseHeader res "Location"))
-    http-no-content (history/goto! (siren/self (:entity @cursor)))
+    http-created    (goto-or-reload! cursor (.getResponseHeader res "Location"))
+    http-no-content (goto-or-reload! cursor (siren/self (:entity @cursor)))
     ))
 
 (defn exec-action!
@@ -71,7 +75,7 @@
   (om/update! cursor :form   nil))
 
 (defn add-subent-action-handler [cursor act]
-  (if (not (:fields action))
+  (if (not (:fields act))
     (assoc act :on-exec
       (fn [ev]
         (.preventDefault ev)
@@ -119,9 +123,11 @@
   (= href (:entity-url @cursor)))
 
 (defn load-entity [cursor href]
-  (if (not (entity-loaded? cursor href))
+  (if (or (not (entity-loaded? cursor href))
+          (:reload @cursor))
     (do
       (om/update! cursor :entity-url href)
+      (om/update! cursor :reload false)
       (request-entity cursor href))
     (when (not (loading/loading? cursor))
       (on-entity-ok cursor (:entity @cursor)))))
