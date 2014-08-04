@@ -62,9 +62,7 @@
 
 (defn do-action [cursor act-name]
   (when-let [act (siren/get-action (:entity @cursor) act-name)]
-    (if (:fields act)
-      (show-action-form cursor act)
-      (exec-action! cursor act))))
+    (show-action-form cursor act)))
 
 (defn do-pending-action [cursor]
   (do-action cursor (:pending-action @cursor))
@@ -74,7 +72,10 @@
   (om/update! cursor :action nil)
   (om/update! cursor :form   nil))
 
-(defn add-subent-action-handler [cursor act]
+(defn update-all-in [m ks f arg]
+  (update-in m ks (fn [m] (map #(f arg %) m))))
+
+(defn add-action-handler [cursor act]
   (if (not (:fields act))
     (assoc act :on-exec
       (fn [ev]
@@ -82,15 +83,13 @@
         (exec-action! cursor act)))
     act))
 
-(defn add-subent-handlers [cursor subent]
-  (update-in subent [:actions]
-             (fn [action]
-               (map #(add-subent-action-handler cursor %) action))))
+(defn add-action-handlers [cursor ent]
+  (update-all-in ent [:actions] add-action-handler cursor))
 
 (defn add-handlers [cursor ent]
-  (update-in ent [:entities]
-             (fn [ent]
-               (map #(add-subent-handlers cursor %) ent))))
+  (let [ent (update-all-in ent [:entities] add-action-handlers cursor)
+        ent (add-action-handlers cursor ent)]
+    ent))
 
 (defn on-entity-ok [cursor ent]
   (let [self (uri/relative (siren/self ent))]

@@ -41,10 +41,11 @@
     "DELETE" "btn-danger"
     "btn-default"))
 
-(defn action->button [ent {:keys [title] :as action}]
+(defn action->button [ent {:keys [title on-exec] :as action}]
   (dom/a #js{:className (str "action btn "
                              (action->class action))
-             :href (action->fragment ent action)} title))
+             :href (action->fragment ent action)
+             :onClick on-exec} title))
 
 (defn subaction->button [ent {:keys [title on-exec] :as action}]
   (dom/a #js{:className (str "action subaction btn btn-xs "
