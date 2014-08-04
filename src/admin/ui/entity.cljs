@@ -22,7 +22,7 @@
   (dom/tr
    nil
    (dom/td #js{:className "property-name"}  (key->str k))
-   (dom/td #js{:className "property-value"}      (str v))))
+   (dom/td #js{:className "property-value"} (js/JSON.stringify (clj->js v)))))
 
 (defn properties [{props :properties}]
   (when props

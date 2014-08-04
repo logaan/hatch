@@ -20,7 +20,7 @@
            :let [value ((:properties ent) prop)]]
        (if (util/name-prop? prop)
          (util/ent->a ent value)
-         value))
+         (js/JSON.stringify (clj->js value))))
      [(subactions ent)]))))
 
 (defn thead [props]
