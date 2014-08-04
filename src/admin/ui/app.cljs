@@ -36,7 +36,7 @@
      :url    (:href action)
      :on-complete
      (fn [res ev]
-       (if-let [listing-href (siren/get-link ent "listing")]
+       (if-let [listing-href (siren/get-link (:entity @cursor) "listing")]
          (history/goto! listing-href)
          (reload! cursor)))}))
 
