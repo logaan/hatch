@@ -44,10 +44,8 @@
   (om/update! cursor :form
               {:action act
                :values {}
-               :back-href (str "#" (:entity-url @cursor))
                :on-submit
                (fn [action values]
-                 (js/console.log (clj->js @values))
                  (exec-action! cursor @action @values))}))
 
 (defn set-pending-action [cursor act-name]
