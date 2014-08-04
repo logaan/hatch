@@ -29,7 +29,7 @@
      #js{:type "radio"
          :name  (str field-key)
          :value (str value)
-         :onChange (on-change values field-key)})
+         :onChange (fn [_] (om/update! values field-key value))})
     title)))
 
 (defn field->input [values {input-type :type :as field}]
