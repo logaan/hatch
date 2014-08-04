@@ -46,10 +46,11 @@
                              (action->class action))
              :href (action->fragment ent action)} title))
 
-(defn subaction->button [ent {:keys [title] :as action}]
+(defn subaction->button [ent {:keys [title on-exec] :as action}]
   (dom/a #js{:className (str "action subaction btn btn-xs "
                              (action->class action))
-             :href (action->fragment ent action)} title))
+             :href (action->fragment ent action)
+             :onClick on-exec} title))
 
 (defn non-self-links [ent]
   (filter #(not (some #{"self"} (:rel %)))
