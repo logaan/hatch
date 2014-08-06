@@ -18,15 +18,11 @@
 (def http-created    201)
 (def http-no-content 204)
 
-(defn goto-or-reload! [cursor href]
-  (om/update! cursor :reload true)
-  (history/goto! href))
-
 (defn on-response! [cursor res]
   (condp = (.getStatus res)
     http-ok         (on-entity-ok cursor (xhr/->edn res))
-    http-created    (goto-or-reload! cursor (.getResponseHeader res "Location"))
-    http-no-content (goto-or-reload! cursor (siren/self (:entity @cursor)))
+    http-created    (history/goto! (.getResponseHeader res "Location"))
+    http-no-content (history/goto! (siren/self (:entity @cursor)))
     ))
 
 (defn exec-action!
@@ -69,19 +65,29 @@
   (om/update! cursor :pending-action nil))
 
 (defn clear-current-action [cursor]
-  (om/update! cursor :action nil)
-  (om/update! cursor :form   nil))
+  (om/update! cursor :form nil))
+
+(defn present-action-form! [cursor act]
+  (let [url (str (:entity-url @cursor) "#" (:name act))]
+    (om/update! cursor :url url)
+    (history/goto! url)
+   (show-action-form cursor act)))
 
 (defn update-all-in [m ks f arg]
   (update-in m ks (fn [m] (map #(f arg %) m))))
 
+(defn prevent-default [f]
+  (fn [ev]
+    (.preventDefault ev)
+    (f ev)))
+
 (defn add-action-handler [cursor act]
-  (if (not (:fields act))
-    (assoc act :on-exec
-      (fn [ev]
-        (.preventDefault ev)
-        (exec-action! cursor act)))
-    act))
+  (assoc act :on-exec
+    (prevent-default
+     (if (:fields act)
+       #(present-action-form! cursor act)
+       #(exec-action! cursor act)
+       ))))
 
 (defn add-action-handlers [cursor ent]
   (update-all-in ent [:actions] add-action-handler cursor))
@@ -96,9 +102,11 @@
     (when (not= self (:entity-url @cursor))
       (om/update! cursor :entity-url self)
       (history/goto! self)))
-  (om/update! cursor :entity (add-handlers cursor ent))
-  (clear-current-action cursor)
-  (do-pending-action cursor))
+
+  (let [ent+ (add-handlers cursor ent)]
+   (om/update! cursor :entity ent+)
+   (clear-current-action cursor)
+   (do-pending-action cursor)))
 
 (defn get-entity [cursor href]
   (loading/begin-loading! cursor)
@@ -118,26 +126,19 @@
   (let [req (get-entity cursor href)]
     (om/update! cursor :current-request req)))
 
-(defn entity-loaded? [cursor href]
-  (= href (:entity-url @cursor)))
-
 (defn load-entity [cursor href]
-  (if (or (not (entity-loaded? cursor href))
-          (:reload @cursor))
-    (do
-      (om/update! cursor :entity-url href)
-      (om/update! cursor :reload false)
-      (request-entity cursor href))
-    (when (not (loading/loading? cursor))
-      (on-entity-ok cursor (:entity @cursor)))))
+  (om/update! cursor :entity-url href)
+  (request-entity cursor href))
 
 (defn reload! [cursor]
   (request-entity cursor (:entity-url @cursor)))
 
 (defn present! [cursor href]
-  (let [[base frag] (uri/split-fragment href)]
-    (set-pending-action cursor frag)
-    (load-entity cursor base)))
+  (when (not= href (:url @cursor))
+    (let [[base frag] (uri/split-fragment href)]
+      (om/update! cursor :url href)
+      (set-pending-action cursor frag)
+      (load-entity cursor base))))
 
 (defn component [data owner]
   (reify

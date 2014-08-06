@@ -27,7 +27,8 @@
    #(-> %
         (debug/clear [:app :entity])
         (debug/clear [:app :current-request])
-        (debug/clear [:nav])))
+        (debug/clear [:nav])
+        ))
   (om/root page state
    {:target (js/document.getElementById "app")}))
 
