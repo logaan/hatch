@@ -38,13 +38,15 @@
          (reload! cursor)))}))
 
   ([cursor action values]
-   (xhr/req
-    {:method (:method action)
-     :url    (:href action)
-     :data   (pr-str values)
-     :headers #js{"Content-Type" "application/edn"}
-     :on-complete
-     (fn [res ev] (on-response! cursor res))})))
+   (if (= "GET" (:method action))
+     (history/goto! (uri/add-query (:href action) values))
+     (xhr/req
+      {:method (:method action)
+       :url    (:href action)
+       :data   (pr-str values)
+       :headers #js{"Content-Type" "application/edn"}
+       :on-complete
+       (fn [res ev] (on-response! cursor res))}))))
 
 (defn show-action-form! [cursor act]
   (om/update! cursor :form
@@ -96,7 +98,7 @@
 
 (defn on-entity-ok! [cursor ent]
   (let [self (util/->href ent)]
-    (when (not= self (:entity-url @cursor))
+    (when (not= self (uri/base (:entity-url @cursor))) ;; FIXME is uri/base needed here?
       (om/update! cursor :entity-url self)
       (history/goto! self)))
 

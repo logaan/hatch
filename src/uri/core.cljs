@@ -25,10 +25,11 @@
    (when (.hasFragment uri)
      (.getFragment uri))))
 
-(defn defragment [url]
+(defn base [url]
   (let [uri (.parse goog.Uri url)]
-   (.setFragment uri "")
-   (.toString uri)))
+    (.setFragment uri "")
+    (.setQuery uri "")
+    (.toString uri)))
 
 (defn split-fragment [url]
   (let [uri  (.parse goog.Uri url)
