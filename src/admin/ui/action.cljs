@@ -1,6 +1,7 @@
 (ns admin.ui.action
   (:require [om.core :as om  :include-macros true]
-            [om.dom  :as dom :include-macros true]))
+            [om.dom  :as dom :include-macros true]
+            [admin.ui.event :as ev]))
 
 (defn input [values {title :title field-key :name input-type :type}]
   (let [id (name (gensym))]
@@ -68,13 +69,8 @@
 (defn fields->inputs [values fields]
   (for [field-group (partition-by :name fields)]
     (if (singleton? field-group)
-      (field->editable values (first field-group))
-      (fields->editable values field-group))))
-
-(defn prevent-default [handler]
-  (fn default-preventer [ev]
-    (.preventDefault ev)
-    (handler ev)))
+      (field->editable  values (first field-group))
+      (fields->editable values        field-group))))
 
 (defn action-form [{:keys [action values on-submit]}]
   (apply
@@ -85,7 +81,7 @@
     [(dom/button
       #js{:type "submit"
           :className "btn btn-primary"
-          :onClick (prevent-default #(on-submit action values))}
+          :onClick (ev/prevent-default #(on-submit action values))}
                  "Submit")])))
 
 (defn component [data owner]

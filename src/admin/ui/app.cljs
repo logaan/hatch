@@ -7,6 +7,7 @@
             [admin.ui.loading :as loading]
             [admin.ui.state   :as state]
             [admin.ui.entity  :as entity]
+            [admin.ui.entity.util :as util]
             [admin.ui.action  :as action]
             [admin.ui.history :as history]))
 
@@ -68,43 +69,38 @@
 (defn clear-current-action! [cursor]
   (om/update! cursor :form nil))
 
-(defn present-action-form! [cursor act]
-  (let [url (str (:entity-url @cursor) "#" (:name act))]
+(defn present-action-form! [cursor ent act]
+  (let [url (util/action->href ent act)]
     (om/update! cursor :url url)
     (history/goto! url)
     (show-action-form! cursor act)))
 
-(defn update-all-in [m ks f arg]
-  (update-in m ks (fn [m] (map #(f arg %) m))))
+(defn update-all-in
+  ([m ks f & args]
+   (update-in m ks (fn [m] (map #(apply f % args) m)))))
 
-(defn prevent-default [f]
-  (fn [ev]
-    (.preventDefault ev)
-    (f ev)))
-
-(defn add-action-handler [cursor act]
+(defn add-action-handler [act ent cursor]
   (assoc act :on-exec
-    (prevent-default
-     (if (:fields act)
-       #(present-action-form! cursor act)
-       #(exec-action! cursor act)
-       ))))
+    (if (:fields act)
+      #(present-action-form! cursor ent act)
+      #(exec-action! cursor act)
+      )))
 
-(defn add-action-handlers [cursor ent]
-  (update-all-in ent [:actions] add-action-handler cursor))
+(defn add-action-handlers [ent cursor]
+  (update-all-in ent [:actions] add-action-handler ent cursor))
 
-(defn add-handlers [cursor ent]
-  (let [ent (update-all-in ent [:entities] add-action-handlers cursor)
-        ent (add-action-handlers cursor ent)]
-    ent))
+(defn add-handlers [ent cursor]
+  (-> ent
+      (update-all-in [:entities] add-action-handlers cursor)
+      (add-action-handlers cursor)))
 
 (defn on-entity-ok! [cursor ent]
-  (let [self (uri/relative (siren/self ent))]
+  (let [self (util/->href ent)]
     (when (not= self (:entity-url @cursor))
       (om/update! cursor :entity-url self)
       (history/goto! self)))
 
-  (let [ent+ (add-handlers cursor ent)]
+  (let [ent+ (add-handlers ent cursor)]
    (om/update! cursor :entity ent+)
    (clear-current-action! cursor)
    (do-pending-action! cursor)))
