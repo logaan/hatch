@@ -93,7 +93,7 @@
    (dom/div
     nil
     (dom/h1 nil (get-in data [:action :title]))
-    (dom/a #js{:href "javascript:history.back()"} "back")
+    (dom/a #js{:href (:back-href data)} "back")
     (dom/hr nil)
     (action-form data)
     )))

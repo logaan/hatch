@@ -49,6 +49,7 @@
   (om/update! cursor :form
               {:action act
                :values {}
+               :back-href (str "#" (:entity-url @cursor))
                :on-submit
                (fn [action values]
                  (exec-action! cursor @action @values))}))
