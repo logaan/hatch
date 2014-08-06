@@ -35,6 +35,11 @@
      :href "http://localhost:8080/entity",
      :type "application/edn",
      :fields [{:name :ent/name, :title "Name", :type :text}]}
+    {:name "show-error",
+     :title "Show Error",
+     :method "DELETE",
+     :href "http://localhost:8080/entity"
+     :on-exec #(js/alert "Error!")}
     {:name "delete-entity",
      :title "Search Entities",
      :method "GET",
@@ -159,11 +164,11 @@
     {:name :event/host,
      :value 17592186046789,
      :type :radio,
-     :title "aaa"}
+     :title "First Option"}
     {:name :event/host,
      :value 17592186046796,
      :type :radio,
-     :title "bbb"}]})
+     :title "Second Option"}]})
 
 (def action-data
    {:action action
