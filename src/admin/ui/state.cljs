@@ -69,7 +69,7 @@
 (defn clear-current-action! [cursor]
   (om/update! cursor :form nil))
 
-(defn present-action-form! [cursor ent act]
+(defn goto-action-form! [cursor ent act]
   (let [url (util/action->href ent act)]
     (om/update! cursor :url url)
     (history/goto! url)
@@ -82,7 +82,7 @@
 (defn add-action-handler [act ent cursor]
   (assoc act :on-exec
     (if (:fields act)
-      #(present-action-form! cursor ent act)
+      #(goto-action-form! cursor ent act)
       #(exec-action! cursor act)
       )))
 
@@ -117,18 +117,15 @@
         (loading/finish-loading! cursor)
         (on-response! cursor res)))}))
 
-(defn request-entity! [cursor href]
+(defn load-entity! [cursor href]
+  (om/update! cursor :entity-url href)
   (when-let [req (:current-request @cursor)]
     (.abort req))
   (let [req (get-entity! cursor href)]
     (om/update! cursor :current-request req)))
 
-(defn load-entity! [cursor href]
-  (om/update! cursor :entity-url href)
-  (request-entity! cursor href))
-
 (defn reload! [cursor]
-  (request-entity! cursor (:entity-url @cursor)))
+  (load-entity! cursor (:entity-url @cursor)))
 
 (defn present! [cursor href]
   (when (not= href (:url @cursor))
