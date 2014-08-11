@@ -3,7 +3,6 @@
             [om.dom  :as dom :include-macros true]
             [admin.ui.nav :as nav]
             [admin.ui.app :as app]
-            [admin.xhr :as xhr]
             ))
 
 (defonce state (atom nil))
