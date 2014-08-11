@@ -23,3 +23,38 @@
 .subaction {
   margin-right: 0.5em;
 }
+
+.form-signin {
+  max-width: 20em;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.form-signin .form-control {
+  position: relative;
+}
+
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+
+.form-signin .form-signin-heading {
+  margin-bottom: 1ex;
+}
+
+.form-signin input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.form-signin button[type="submit"] {
+  display: block;
+  width: 100%;
+}
