@@ -9,8 +9,7 @@
 
 (reset!
  state
- {:nav {:title "Webcasting"
-        :loader nav/load-root-entity}
+ {:nav {:title "Webcasting"}
   :app {}
   })
 

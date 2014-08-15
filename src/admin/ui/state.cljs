@@ -127,6 +127,9 @@
 (defn reload! [cursor]
   (load-entity! cursor (:entity-url @cursor)))
 
+(defn init! [cursor]
+  (om/update! cursor :auth {:on-submit #(js/alert (pr-str %))}))
+
 (defn present! [cursor href]
   (when (not= href (:url @cursor))
     (let [[base frag] (uri/split-fragment href)]

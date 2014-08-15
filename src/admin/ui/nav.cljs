@@ -29,24 +29,23 @@
 (defn brand [title href]
   (dom/a #js{:className "navbar-brand" :href href} title))
 
-(defn load-entity [on-entity]
+(defn load-entity [url on-entity]
   (xhr/req
    {:method "GET"
-    :url "/"
+    :url url
     :on-complete
     (fn [xhr e]
       (on-entity (xhr/->edn xhr)))}))
 
-(defn component [{:keys [title entity loader] :as data} owner]
+(defn component [{:keys [title entity] :as data} owner]
   (reify
     om/IWillMount
     (will-mount [this]
-     (when loader
-       (om/update! data :loading true)
-       (letfn [(on-entity [ent]
-                 (om/update! data :entity ent)
-                 (om/update! data :loading false))]
-         (loader on-entity))))
+     (om/update! data :loading true)
+     (letfn [(on-entity [ent]
+              (om/update! data :entity ent)
+              (om/update! data :loading false))]
+       (load-entity "/" on-entity)))
 
     om/IRender
     (render [this]
