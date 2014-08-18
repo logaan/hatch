@@ -3,6 +3,7 @@
             [om.dom  :as dom :include-macros true]
             [siren.core :as siren]
             [admin.xhr :as xhr]
+            [admin.ui.loading :as loading]
             [admin.ui.entity.util :as util]))
 
 (defn nav-items [links]
@@ -41,10 +42,10 @@
   (reify
     om/IWillMount
     (will-mount [this]
-     (om/update! data :loading true)
+     (loading/begin-loading! data)
      (letfn [(on-entity [ent]
               (om/update! data :entity ent)
-              (om/update! data :loading false))]
+              (loading/finish-loading! data))]
        (load-entity "/" on-entity)))
 
     om/IRender

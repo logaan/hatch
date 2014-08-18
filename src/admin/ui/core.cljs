@@ -25,7 +25,8 @@
    #(-> %
         (debug/clear [:app :entity])
         (debug/clear [:app :current-request])
-        (debug/clear [:nav])
+        (debug/clear [:app :auth :on-login])
+        (debug/clear [:nav :entity])
         ))
   (om/root page state
    {:target (js/document.getElementById "app")}))

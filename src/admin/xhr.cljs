@@ -12,7 +12,7 @@
       (events/listen xhr goog.net.EventType.COMPLETE
         (fn [e] (on-complete xhr e))))
 
-    (.send xhr url method data headers)
+    (.send xhr url method data (clj->js headers))
 
     xhr))
 

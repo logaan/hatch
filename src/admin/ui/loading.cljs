@@ -2,10 +2,10 @@
   (:require [om.core :as om]))
 
 (defn begin-loading! [cursor]
-  (om/update! cursor :loading true))
+  (om/update! cursor :loading? true))
 
 (defn finish-loading! [cursor]
-  (om/update! cursor :loading false))
+  (om/update! cursor :loading? false))
 
 (defn loading? [cursor]
-  (:loading @cursor))
+  (:loading? @cursor))

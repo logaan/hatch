@@ -24,9 +24,17 @@
     http-no-content (history/goto! (siren/self (:entity @cursor)))
     ))
 
+(defn req [cursor opts]
+  (let [{:keys [username password]} (:auth @cursor)]
+   (xhr/req
+    (assoc opts
+      :headers {"Authorization"
+                (str "Basic "
+                     (js/btoa (str username ":" password)))}))))
+
 (defn exec-action!
   ([cursor action]
-   (xhr/req
+   (req cursor
     {:method (:method action)
      :url    (:href action)
      :on-complete
@@ -38,7 +46,7 @@
   ([cursor action values]
    (if (= "GET" (:method action))
      (history/goto! (uri/add-query (:href action) values))
-     (xhr/req
+     (req cursor
       {:method (:method action)
        :url    (:href action)
        :data   (pr-str values)
@@ -127,8 +135,23 @@
 (defn reload! [cursor]
   (load-entity! cursor (:entity-url @cursor)))
 
+(defn on-login [cursor]
+  (fn [login-cursor]
+    (loading/begin-loading! login-cursor)
+    (req cursor
+         {:method "GET"
+          :url "/"
+          :on-complete
+          (fn [res ev]
+            (loading/finish-loading! login-cursor)
+            (let [status (.getStatus res)]
+              (if (and (>= status 200)
+                       (<  status 300))
+                (om/update! cursor :logged-in? true)
+                (js/alert "login error!"))))})))
+
 (defn init! [cursor]
-  (om/update! cursor :auth {:on-login #(js/alert (pr-str %))}))
+  (om/update! cursor :auth {:on-login (on-login cursor)}))
 
 (defn present! [cursor href]
   (when (not= href (:url @cursor))
