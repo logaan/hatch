@@ -150,7 +150,9 @@
               (if (and (>= status 200)
                        (<  status 300))
                 (login/login! login-cursor)
-                (js/alert "Sign in failed: please check username and password"))))})))
+                (do
+                  (login/clear-password! login-cursor)
+                  (js/alert "Sign in failed: please check username and password")))))})))
 
 (defn init! [cursor]
   (om/update! cursor :auth {}))

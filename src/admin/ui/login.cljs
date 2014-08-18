@@ -2,6 +2,9 @@
   (:require [om.core :as om  :include-macros true]
             [om.dom  :as dom :include-macros true]))
 
+(defn clear-password! [cursor]
+  (om/update! cursor :password ""))
+
 (defn logout! [cursor]
   (om/update! cursor :logged-in? false)
   (om/update! cursor :username "")
