@@ -22,6 +22,7 @@
     http-ok         (on-entity-ok! cursor (xhr/->edn res))
     http-created    (history/goto! (.getResponseHeader res "Location"))
     http-no-content (history/goto! (siren/self (:entity @cursor)))
+    (js/alert "Server error: please refresh the page and try again.")
     ))
 
 (defn req [cursor opts]
@@ -148,7 +149,7 @@
               (if (and (>= status 200)
                        (<  status 300))
                 (om/update! cursor :logged-in? true)
-                (js/alert "login error!"))))})))
+                (js/alert "Could not Login!"))))})))
 
 (defn init! [cursor]
   (om/update! cursor :auth {:on-login (on-login cursor)}))
