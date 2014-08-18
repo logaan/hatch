@@ -4,9 +4,23 @@
             [siren.core :as siren]
             [admin.xhr :as xhr]
             [admin.ui.loading :as loading]
+            [admin.ui.login :as login]
             [admin.ui.entity.util :as util]))
 
-(defn nav-items [links]
+(defn logout-button [auth]
+  (if (login/logged-in? auth)
+    (dom/ul
+     #js{:className "nav navbar-nav navbar-right"}
+     (dom/li
+      nil
+      (dom/a
+       #js{:href "#"
+           :onClick (fn [ev]
+                      (.preventDefault ev)
+                      (login/logout! auth))}
+       "logout")))))
+
+(defn nav-items [links auth]
   (dom/div
    #js{:className "navbar-collapse collapse"}
    (apply dom/ul
@@ -14,7 +28,8 @@
           (for [link links]
             (dom/li
              #js{:className "" #_"active"}
-             (util/link->a link))))))
+             (util/link->a link))))
+   (logout-button auth)))
 
 (defn collapse-button []
   (dom/button
@@ -59,5 +74,5 @@
          #js{:className "navbar-header"}
          (brand title (util/->fragment entity))
          (collapse-button))
-        (nav-items (util/non-self-links entity))
+        (nav-items (util/non-self-links entity) auth)
         )))))

@@ -18,7 +18,7 @@
    (dom/div
     #js{:className "container"}
     (om/build nav/component {:data (:nav data)
-                             :auth (:auth data)})
+                             :auth (:auth (:app data))})
     (om/build app/component (:app data)))))
 
 (defn render! []

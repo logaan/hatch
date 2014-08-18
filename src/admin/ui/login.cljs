@@ -3,7 +3,9 @@
             [om.dom  :as dom :include-macros true]))
 
 (defn logout! [cursor]
-  (om/update! cursor :logged-in? false))
+  (om/update! cursor :logged-in? false)
+  (om/update! cursor :username "")
+  (om/update! cursor :password ""))
 
 (defn login! [cursor]
   (om/update! cursor :logged-in? true))
@@ -40,7 +42,7 @@
          :className "form-control"
          :placeholder "Password"
          :required true
-         :value (:password password)
+         :value (:password data)
          :onChange (update-key data :password)})
     (dom/button
      #js{:type "submit"

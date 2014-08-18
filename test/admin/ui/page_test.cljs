@@ -5,15 +5,19 @@
             [admin.ui.nav :as nav]
             [admin.ui.entity :as entity]))
 
+(def state
+  (atom {:nav test-data/nav-data
+         :ent test-data/ent}))
+
 (defn page [data owner]
   (om/component
    (dom/div
     #js{:className "container"}
-    (om/build nav/component    test-data/nav-data)
-    (om/build entity/component test-data/ent))))
+    (om/build nav/component    (:nav data))
+    (om/build entity/component (:ent data)))))
 
 (defn render! []
-  (om/root page {}
+  (om/root page state
            {:target (js/document.getElementById "app")}))
 
 (render!)

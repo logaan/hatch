@@ -182,5 +182,7 @@
     {:rel ["events"], :href "http://localhost:8080/events"}]})
 
 (def nav-data
-  {:title "Webcasting"
-   :entity root-ent})
+  {:data {:title "Webcasting"
+          :entity root-ent}
+   :auth {:username "foo"
+          :logged-in? true}})
