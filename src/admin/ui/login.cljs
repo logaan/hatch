@@ -6,18 +6,15 @@
   (fn [e] (om/update! cursor k (.. e -target -value))))
 
 (defn component
-  [{:keys [username password on-submit] :as cursor} owner]
+  [{:keys [username password on-login] :as cursor} owner]
   (om/component
    (dom/form
     #js{:className "form-signin"
         :role      "form"
         :onSubmit  (fn [e]
                      (.preventDefault e)
-                     (when on-submit
-                       (on-submit
-                        (select-keys
-                         @cursor
-                         [:username :password]))))}
+                     (when on-login
+                       (on-login cursor)))}
     (dom/h2
      #js{:className "form-signin-heading"}
      "Please sign in")

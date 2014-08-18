@@ -7,7 +7,7 @@
 
 (defn render! []
   (om/root login/component
-           {:on-submit #(js/alert (pr-str %))}
+           {:on-login #(js/alert (pr-str (select-keys @% [:username :password])))}
            {:target (js/document.getElementById "login")})
   (om/root entity/component test-data/hosts-data
            {:target (js/document.getElementById "entity-hosts")})
