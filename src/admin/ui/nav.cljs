@@ -38,7 +38,7 @@
     (fn [xhr e]
       (on-entity (xhr/->edn xhr)))}))
 
-(defn component [{:keys [title entity] :as data} owner]
+(defn component [{{:keys [title entity] :as data} :data auth :auth} owner]
   (reify
     om/IWillMount
     (will-mount [this]

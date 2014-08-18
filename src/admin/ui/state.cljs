@@ -7,7 +7,8 @@
             [admin.ui.entity  :as entity]
             [admin.ui.entity.util :as util]
             [admin.ui.action  :as action]
-            [admin.ui.history :as history]))
+            [admin.ui.history :as history]
+            [admin.ui.login   :as login]))
 
 (declare present!)
 (declare reload!)
@@ -136,7 +137,7 @@
 (defn reload! [cursor]
   (load-entity! cursor (:entity-url @cursor)))
 
-(defn on-login [cursor]
+(defn make-login-handler [cursor]
   (fn [login-cursor]
     (loading/begin-loading! login-cursor)
     (req cursor
@@ -148,11 +149,11 @@
             (let [status (.getStatus res)]
               (if (and (>= status 200)
                        (<  status 300))
-                (om/update! cursor :logged-in? true)
-                (js/alert "Could not Login!"))))})))
+                (login/login! login-cursor)
+                (js/alert "Sign in failed: please check username and password"))))})))
 
 (defn init! [cursor]
-  (om/update! cursor :auth {:on-login (on-login cursor)}))
+  (om/update! cursor :auth {}))
 
 (defn present! [cursor href]
   (when (not= href (:url @cursor))

@@ -2,11 +2,20 @@
   (:require [om.core :as om  :include-macros true]
             [om.dom  :as dom :include-macros true]))
 
+(defn logout! [cursor]
+  (om/update! cursor :logged-in? false))
+
+(defn login! [cursor]
+  (om/update! cursor :logged-in? true))
+
+(defn logged-in? [cursor]
+  (:logged-in? cursor))
+
 (defn update-key [cursor k]
   (fn [e] (om/update! cursor k (.. e -target -value))))
 
 (defn component
-  [{:keys [username password on-login] :as cursor} owner]
+  [{:keys [data on-login]} owner]
   (om/component
    (dom/form
     #js{:className "form-signin"
@@ -14,7 +23,7 @@
         :onSubmit  (fn [e]
                      (.preventDefault e)
                      (when on-login
-                       (on-login cursor)))}
+                       (on-login data)))}
     (dom/h2
      #js{:className "form-signin-heading"}
      "Please sign in")
@@ -24,15 +33,15 @@
          :placeholder "Username"
          :required true
          :autofocus true
-         :value username
-         :onChange (update-key cursor :username)})
+         :value (:username data)
+         :onChange (update-key data :username)})
     (dom/input
      #js{:type "password"
          :className "form-control"
          :placeholder "Password"
          :required true
-         :value password
-         :onChange (update-key cursor :password)})
+         :value (:password password)
+         :onChange (update-key data :password)})
     (dom/button
      #js{:type "submit"
          :className "btn btn-primary bnt-block"}
