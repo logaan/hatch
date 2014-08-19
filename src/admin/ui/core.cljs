@@ -22,7 +22,7 @@
     (om/build app/component (:app data)))))
 
 (defn render! []
-  (debug/attach-inspector state
+  #_(debug/attach-inspector state
    #(-> %
         (debug/clear [:app :entity])
         (debug/clear [:app :current-request])
