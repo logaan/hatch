@@ -155,7 +155,8 @@
                   (js/alert "Sign in failed: please check username and password")))))})))
 
 (defn init! [cursor]
-  (om/update! cursor :auth {}))
+  (om/transact! cursor :auth #(or % {}))
+  (login/login-from-localstorage (:auth cursor)))
 
 (defn present! [cursor href]
   (when (not= href (:url @cursor))
