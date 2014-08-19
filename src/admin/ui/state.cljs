@@ -23,10 +23,10 @@
     http-ok         (on-entity-ok! cursor (xhr/->edn res))
     http-created    (history/goto! (.getResponseHeader res "Location"))
     http-no-content (history/goto! (siren/self (:entity @cursor)))
-    (js/alert "Server error: please refresh the page and try again.")
+    (js/alert (str "Server error: please refresh the page and try again."))
     ))
 
-(defn req [cursor opts]
+(defn auth-req [cursor opts]
   (let [{:keys [username password]} (:auth @cursor)]
    (xhr/req
     (assoc opts
@@ -36,7 +36,7 @@
 
 (defn exec-action!
   ([cursor action]
-   (req cursor
+   (auth-req cursor
     {:method (:method action)
      :url    (:href action)
      :on-complete
@@ -48,7 +48,7 @@
   ([cursor action values]
    (if (= "GET" (:method action))
      (history/goto! (uri/add-query (:href action) values))
-     (req cursor
+     (auth-req cursor
       {:method (:method action)
        :url    (:href action)
        :data   (pr-str values)
@@ -122,7 +122,7 @@
     :url href
     :on-complete
     (fn [res ev]
-      (when (> (.getStatus res) 0)
+      (when (not (xhr/aborted? res))
         (om/update! cursor :current-request nil)
         (loading/finish-loading! cursor)
         (on-response! cursor res)))}))
@@ -140,7 +140,7 @@
 (defn make-login-handler [cursor]
   (fn [login-cursor]
     (loading/begin-loading! login-cursor)
-    (req cursor
+    (auth-req cursor
          {:method "GET"
           :url "/"
           :on-complete
