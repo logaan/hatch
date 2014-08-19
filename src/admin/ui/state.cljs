@@ -23,7 +23,7 @@
     http-ok         (on-entity-ok! cursor (xhr/->edn res))
     http-created    (history/goto! (.getResponseHeader res "Location"))
     http-no-content (history/goto! (siren/self (:entity @cursor)))
-    (js/alert (str "Server error: please refresh the page and try again."))
+    (js/alert "Server error: please refresh the page and try again.")
     ))
 
 (defn auth-req [cursor opts]
