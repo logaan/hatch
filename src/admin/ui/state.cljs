@@ -79,10 +79,13 @@
 (defn clear-current-action! [cursor]
   (om/update! cursor :form nil))
 
+(defn update-location! [cursor url]
+  (om/update! cursor :url url) ;; pre-set url so no action is taken onhashchange
+  (history/goto! url))
+
 (defn goto-action-form! [cursor ent act]
   (let [url (util/action->href ent act)]
-    (om/update! cursor :url url)
-    (history/goto! url)
+    (update-location! cursor url)
     (show-action-form! cursor act)))
 
 (defn update-all-in
@@ -108,7 +111,7 @@
   (let [self (util/->href ent)]
     (when (not= self (uri/base (:entity-url @cursor))) ;; FIXME is uri/base needed here?
       (om/update! cursor :entity-url self)
-      (history/goto! self)))
+      (update-location! cursor self)))
 
   (let [ent+ (add-handlers ent cursor)]
    (om/update! cursor :entity ent+)
