@@ -29,10 +29,9 @@
 (defn auth-req [cursor opts]
   (let [{:keys [username password]} (:auth @cursor)]
    (xhr/req
-    (assoc opts
-      :headers {"Authorization"
-                (str "Basic "
-                     (js/btoa (str username ":" password)))}))))
+    (update-in opts [:headers]
+      #(assoc % "Authorization"
+        (str "Basic " (js/btoa (str username ":" password))))))))
 
 (defn exec-action!
   ([cursor action]
@@ -52,7 +51,7 @@
       {:method (:method action)
        :url    (:href action)
        :data   (pr-str values)
-       :headers #js{"Content-Type" "application/edn"}
+       :headers {"Content-Type" "application/edn"}
        :on-complete
        (fn [res ev] (on-response! cursor res))}))))
 
