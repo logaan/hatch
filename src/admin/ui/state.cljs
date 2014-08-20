@@ -141,22 +141,22 @@
   (fn [login-cursor]
     (loading/begin-loading! login-cursor)
     (auth-req cursor
-         {:method "GET"
-          :url "/"
-          :on-complete
-          (fn [res ev]
-            (loading/finish-loading! login-cursor)
-            (let [status (.getStatus res)]
-              (if (and (>= status 200)
-                       (<  status 300))
-                (login/login! login-cursor)
-                (do
-                  (login/clear-password! login-cursor)
-                  (js/alert "Sign in failed: please check username and password")))))})))
+      {:method "GET"
+       :url "/"
+       :on-complete
+       (fn [res ev]
+         (loading/finish-loading! login-cursor)
+         (let [status (.getStatus res)]
+           (if (and (>= status 200)
+                    (<  status 300))
+             (login/login! login-cursor)
+             (do
+               (login/clear-password! login-cursor)
+               (js/alert "Sign in failed: please check username and password")))))})))
 
 (defn init! [cursor]
   (om/transact! cursor :auth #(or % {}))
-  (login/login-from-localstorage (:auth cursor)))
+  (login/login-from-localstorage! (:auth cursor)))
 
 (defn present! [cursor href]
   (when (not= href (:url @cursor))

@@ -46,29 +46,29 @@
     "DELETE" "btn-danger"
     "btn-default"))
 
-(defn action->button [ent {:keys [title on-exec] :as act}]
-  (dom/a #js{:className (str "action btn "
+(defn action->button* [ent {:keys [title on-exec] :as act} cls]
+  (dom/a #js{:className (str cls " "
                              (action->class act))
              :href (action->fragment ent act)
              :onClick (ev/prevent-default on-exec)} title))
 
-(defn subaction->button [ent {:keys [title on-exec] :as act}]
-  (dom/a #js{:className (str "action subaction btn btn-xs "
-                             (action->class act))
-             :href (action->fragment ent act)
-             :onClick (ev/prevent-default on-exec)} title))
+(defn action->button [ent act]
+  (action->button* ent act "action btn"))
+
+(defn subaction->button [ent act]
+  (action->button* ent act "action subaction btn btn-xs"))
+
+(defn wrap-list [cls ls]
+  (when (not (empty? ls))
+    (apply dom/ul #js{:className cls}
+           (map #(dom/li nil %) ls))))
 
 (defn non-self-links [ent]
   (filter #(not (some #{"self"} (:rel %)))
           (:links ent)))
 
-(defn wrap-list [className ls]
-  (when (not (empty? ls))
-    (apply dom/ul #js{:className className}
-           (map #(dom/li nil %) ls))))
-
-(defn union-props [entities]
+(defn union-props [ents]
   (-> (reduce
        set/union
-       (map (comp set keys :properties) entities))
+       (map (comp set keys :properties) ents))
       (disj :db/id)))

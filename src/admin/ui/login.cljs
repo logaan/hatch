@@ -24,7 +24,7 @@
 (defn logged-in? [cursor]
   (:logged-in? cursor))
 
-(defn login-from-localstorage [cursor]
+(defn login-from-localstorage! [cursor]
   (let [username (.get storage "username")
         password (.get storage "password")]
     (when (and username password)

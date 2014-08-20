@@ -16,6 +16,7 @@
                    :compiler {:output-to "resources/test/js/main.js"
                               :output-dir "resources/test/js"
                               :optimizations :none
+                              :pretty-print true
                               :source-map "resources/test/js/main.js.map"}}}}
   :profiles {:dev {:dependencies [[ankha "0.1.4-SNAPSHOT"]]
                    :plugins [[com.cemerick/austin "0.1.4"]]}})
