@@ -1,3 +1,7 @@
+body {
+  margin: 2ex 0 10ex 0;
+}
+
 .title {
   text-transform: capitalize;
 }
