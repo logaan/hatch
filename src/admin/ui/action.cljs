@@ -3,7 +3,33 @@
             [om.dom  :as dom :include-macros true]
             [admin.ui.event :as ev]))
 
-(defn input [values {title :title field-key :name input-type :type}]
+(defn default-input [values id input-type field-key]
+  (dom/input
+      #js{:id id
+          :className "form-control"
+          :type (name input-type)
+          :name (str field-key)
+          :onChange
+          (fn [e]
+            (om/update! values field-key (.. e -target -value)))}))
+
+(defn datetime-input [values id input-type field-key]
+  (dom/div
+   #js{:className "input-group"}
+   (dom/input
+    #js{:id id
+        :className "form-control"
+        :type "datetime"
+        :name (str field-key)})
+   (dom/span #js{:className "input-group-addon"}
+             (dom/span #js{:className "glyphicon glyphicon-calendar"}))))
+
+(defn input [values id input-type field-key]
+  (condp = input-type
+    :datetime (datetime-input values id input-type field-key)
+    (default-input values id input-type field-key)))
+
+(defn labeled-input [values {title :title field-key :name input-type :type}]
   (let [id (name (gensym))]
     (dom/div
      #js{:className "form-group"}
@@ -11,14 +37,8 @@
       #js{:className "form-label"
           :htmlFor id}
       title)
-     (dom/input
-      #js{:id id
-          :className "form-control"
-          :type (name input-type)
-          :name (str field-key)
-          :onChange
-          (fn [e]
-            (om/update! values field-key (.. e -target -value)))}))))
+     (input values id input-type field-key)
+     )))
 
 (defn radio-input [values {:keys [title value] field-key :name}]
   (dom/div
@@ -37,7 +57,7 @@
 (defn field->input [values {input-type :type :as field}]
   (cond
     (= input-type :radio) (radio-input values field)
-    :else                 (input values field)))
+    :else                 (labeled-input values field)))
 
 (defn editable [{:keys [values field]} owner]
   (reify
@@ -85,11 +105,17 @@
                  "Submit")])))
 
 (defn component [data owner]
-  (om/component
-   (dom/div
-    nil
-    (dom/h1 nil (get-in data [:action :title]))
-    (dom/a #js{:href (:back-href data)} "back")
-    (dom/hr nil)
-    (action-form data)
-    )))
+  (reify
+    om/IDidMount
+    (did-mount [this]
+               (let [el (.getDOMNode owner)]
+                 (.. (js/$ el) (find "[type=\"datetime\"]") datetimepicker)))
+    om/IRender
+    (render [this]
+            (dom/div
+             nil
+             (dom/h1 nil (get-in data [:action :title]))
+             (dom/a #js{:href (:back-href data)} "back")
+             (dom/hr nil)
+             (action-form data)
+             ))))
