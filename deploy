@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+scp -r -i ../wc-api/private_keys/webcasting-110F344F-0274-4EF6-99A0-E207D21916A8 resources/test core@54.79.81.145:webcasting-ui
