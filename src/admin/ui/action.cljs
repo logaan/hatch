@@ -1,5 +1,6 @@
 (ns admin.ui.action
-  (:require [om.core :as om  :include-macros true]
+  (:require [cljs.reader :as r]
+            [om.core :as om  :include-macros true]
             [om.dom  :as dom :include-macros true]
             [admin.ui.event :as ev]))
 
@@ -14,6 +15,9 @@
           (fn [e]
             (om/update! values field-key (.. e -target -value)))}))
 
+(defn fmt [n]
+  (.slice (str "0" n) -2))
+
 (defn datetime-input [values id input-type field-key]
   (dom/div
    #js{:className "input-group"}
@@ -21,6 +25,13 @@
     #js{:id id
         :className "form-control"
         :type "datetime"
+        :value (if-let [value (values field-key)]
+                 (str (.getFullYear value) "-"
+                      (fmt (.getMonth value)) "-"
+                      (fmt (.getDay value)) " "
+                      (fmt (.getHours value)) ":"
+                      (fmt (.getMinutes value))
+                      ))
         :name (str field-key)})
    (dom/span #js{:className "input-group-addon"}
              (dom/span #js{:className "glyphicon glyphicon-calendar"}))))
@@ -110,13 +121,23 @@
     om/IWillMount
     (will-mount [this]
                 (let [fields (get-in data [:action :fields])
-                      values (into {} (map (juxt :name :value) fields))]
+                      value-fields (filter :value fields)
+                      values (into {} (map (juxt :name :value) value-fields))]
                   (om/transact! (:values data) #(merge % values))
                   ))
     om/IDidMount
     (did-mount [this]
-               (let [el (.getDOMNode owner)]
-                 (.. (js/$ el) (find "[type=\"datetime\"]") datetimepicker)))
+               (let [el (.getDOMNode owner)
+                     values (:values data)]
+                 (.. (js/$ el)
+                     (find "[type=\"datetime\"]")
+                     datetimepicker
+                     (on "changeDate"
+                        (fn [ev]
+                          (js/console.log (.-date ev))
+                          (om/update! values
+                                      (r/read-string (-> ev .-target .-name))
+                                      (.-date ev)))))))
     om/IRender
     (render [this]
             (dom/div
