@@ -9,6 +9,7 @@
           :className "form-control"
           :type (name input-type)
           :name (str field-key)
+          :value (values field-key)
           :onChange
           (fn [e]
             (om/update! values field-key (.. e -target -value)))}))
@@ -106,6 +107,12 @@
 
 (defn component [data owner]
   (reify
+    om/IWillMount
+    (will-mount [this]
+                (let [fields (get-in data [:action :fields])
+                      values (into {} (map (juxt :name :value) fields))]
+                  (om/transact! (:values data) #(merge % values))
+                  ))
     om/IDidMount
     (did-mount [this]
                (let [el (.getDOMNode owner)]
