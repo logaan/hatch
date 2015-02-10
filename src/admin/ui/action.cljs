@@ -120,30 +120,34 @@
   (reify
     om/IWillMount
     (will-mount [this]
-                (let [fields (get-in data [:action :fields])
-                      value-fields (filter :value fields)
-                      values (into {} (map (juxt :name :value) value-fields))]
-                  (om/transact! (:values data) #(merge % values))
-                  ))
+      (let [fields (get-in data [:action :fields])
+            value-fields (filter :value fields)
+            values (into {} (map (juxt :name :value) value-fields))]
+        (om/transact! (:values data) #(merge % values))
+        ))
+
     om/IDidMount
     (did-mount [this]
-               (let [el (.getDOMNode owner)
-                     values (:values data)]
-                 (.. (js/$ el)
-                     (find "[type=\"datetime\"]")
-                     datetimepicker
-                     (on "changeDate"
-                        (fn [ev]
-                          (js/console.log (.-date ev))
-                          (om/update! values
-                                      (r/read-string (-> ev .-target .-name))
-                                      (.-date ev)))))))
+      (if (and (exists? $) (exists? datetimepicker))
+       (let [el (.getDOMNode owner)
+                      values (:values data)]
+                  (.. (js/$ el)
+                      (find "[type=\"datetime\"]")
+                      datetimepicker
+                      (on "changeDate"
+                          (fn [ev]
+                            (js/console.log (.-date ev))
+                            (om/update! values
+                                        (r/read-string (-> ev .-target .-name))
+                                        (.-date ev))))))
+       (js/console.log "warning: no date time picker")))
+
     om/IRender
     (render [this]
-            (dom/div
-             nil
-             (dom/h1 nil (get-in data [:action :title]))
-             (dom/a #js{:href (:back-href data)} "back")
-             (dom/hr nil)
-             (action-form data)
-             ))))
+      (dom/div
+        nil
+        (dom/h1 nil (get-in data [:action :title]))
+        (dom/a #js{:href (:back-href data)} "back")
+        (dom/hr nil)
+        (action-form data)
+        ))))

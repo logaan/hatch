@@ -172,7 +172,8 @@
 
 (def action-data
    {:action action
-    :form   {}})
+    :form   {}
+    :values {}})
 
 (def root-ent
   {:class "index",
