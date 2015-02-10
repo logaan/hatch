@@ -9,7 +9,7 @@
 
 (reset!
  state
- {:nav {:title "Webcasting"}
+ {:nav {:title "Navbar Title"}
   :app {:auth {}} ;; FIXME how do I get rid of this?
   })
 
